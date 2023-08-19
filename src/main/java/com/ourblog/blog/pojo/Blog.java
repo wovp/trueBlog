@@ -3,6 +3,9 @@ package com.ourblog.blog.pojo;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
+/**
+ * @author 11
+ */
 @Data
 public class Blog {
 
@@ -24,6 +27,16 @@ public class Blog {
   private long likes;
   private long collects;
 
-
-
+  public Blog(String author_id, String author, String articleTitle, String articleContent, String articleCategories, String publishDate, String articleSummary) {
+    this.author_id = Integer.parseInt(author_id);
+    this.readed = 0;
+    this.collects = 0;
+    this.likes = 0;
+    this.author = author;
+    this.articleTitle = articleTitle;
+    this.articleContent = articleContent;
+    this.articleCategories = articleCategories;
+    this.publishDate = publishDate;
+    this.articleSummary = articleSummary;
+  }
 }

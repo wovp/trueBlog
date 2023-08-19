@@ -30,7 +30,8 @@ public interface BlogInterface {
     public List<Blog> getBlogListByLikes();
 
     // 发布博客, 成功返回1， 失败返回0
-    public int publishBlog(String author,
+    public int publishBlog(String author_id,
+            String author,
                            String articleTitle,
                            String articleContent,
                            String articleCategories,
