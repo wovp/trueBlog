@@ -5,6 +5,8 @@ import com.ourblog.blog.mapper.BlogMapper;
 import com.ourblog.blog.pojo.Blog;
 import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.service.impl.BlogImpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,31 +26,18 @@ import java.util.List;
  */
 @RestController
 @CrossOrigin(origins = "*")
+@Api(tags = "首页和博客详情页的模块")
 public class BlogController {
 
     @Autowired
     BlogImpl blogImpl;
-//    @Autowired
-//    BlogMapper blogMapper;
-     // 下面是测试的数据
-//    @GetMapping("/blog")
-//    public Result Hello() {
-//        // 查询特定字段
-//        QueryWrapper<Blog> BlogQueryWrapper = new QueryWrapper<>();
-//        BlogQueryWrapper.select("author", "articleTitle");
-//
-//        List<Blog> blogs = blogMapper.selectList(BlogQueryWrapper);
-//        List<BlogResult> blogResults = new ArrayList<BlogResult>();
-//        for (Blog blog : blogs) {
-//            BlogResult blogResult = new BlogResult(blog);
-//            blogResults.add(blogResult);
-//        }
-//        Result result = new Result();
-//        result.setResult(blogResults);
-//        result.setCode("201");
-//        return result;
-//    }
-
+    @ApiOperation(value = "查询所有博客列表",
+            protocols = "http",
+            httpMethod = "GET",
+            consumes="application/json",
+            response=List.class,
+            notes = "code:200 表示成功"
+    )
     @GetMapping("/api/blog/getBlogList")
     public Result getBlogList(){
         Result result = new Result();
