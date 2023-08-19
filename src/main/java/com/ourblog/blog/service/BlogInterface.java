@@ -1,6 +1,7 @@
 package com.ourblog.blog.service;
 
 import com.ourblog.blog.pojo.Blog;
+import com.ourblog.blog.pojo.User;
 
 import java.util.List;
 
@@ -11,6 +12,8 @@ import java.util.List;
  * Author: my
  * Creat: 2023/8/18 10:33
  */
+
+// 首页 和 分类页面 和 博客详情页（不包含评论） 和 博客发布页 的接口
 public interface BlogInterface {
     // 根据传入的分类搜索博客列表
     public List<Blog> getBlogListByCategory(String category);
@@ -56,6 +59,9 @@ public interface BlogInterface {
 
     // 博客被阅读了, 增加阅读量
     public int addBlogReaded(String blogID);
+
+    // 返回发布博客的个人信息，用于博客详情页面使用
+    User getBlogAuthor(String authorID);
 
 
 

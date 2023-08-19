@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ourblog.blog.mapper.BlogMapper;
 import com.ourblog.blog.pojo.Blog;
+import com.ourblog.blog.pojo.User;
 import com.ourblog.blog.service.BlogInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.object.UpdatableSqlQuery;
@@ -131,6 +132,11 @@ public class BlogImpl implements BlogInterface {
         int update1 = blogMapper.update(blog, update);
         return update1;
 
+    }
+
+    @Override
+    public User getBlogAuthor(String authorID) {
+        return null;
     }
 
 }
