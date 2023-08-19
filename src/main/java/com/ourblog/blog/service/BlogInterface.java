@@ -1,5 +1,9 @@
 package com.ourblog.blog.service;
 
+import com.ourblog.blog.pojo.Blog;
+
+import java.util.List;
+
 /**
  * ClassName: Article
  * Package: com.ourbolg.blog.service
@@ -8,17 +12,51 @@ package com.ourblog.blog.service;
  * Creat: 2023/8/18 10:33
  */
 public interface BlogInterface {
-    /**
-     * category 可选：
-     *  空
-     *  分类列表
-     *  用户的点赞过的文章
-     *  用户的收藏的文章
-     * category 为空 就查询所有类型的文章
-     * category 不为空 就查询特定类型的文章
-     *
-     * */
-    // public List<Article> getBlogByCategoryList(String category);
+    // 根据传入的分类搜索博客列表
+    public List<Blog> getBlogListByCategory(String category);
+
+    // 根据关键词搜索博客标题
+    public List<Blog> getBlogListByKeyInTitle(String keyWord);
+
+    // 获取所有博客列表
+    public List<Blog> getBlogList();
+
+
+    // 根据博客ID获取博客详情内容,应该是博客的所有内容，也就是一个博客对象
+    public Blog getBlogDetail(String blogID);
+
+
+    // 根据点赞量排序获取前五个点赞量最高的博客
+    public List<Blog> getBlogListByLikes();
+
+    // 发布博客, 成功返回1， 失败返回0
+    public int publishBlog(String author,
+                           String articleTitle,
+                           String articleContent,
+                           String articleCategories,
+                           String publishDate,
+                           String articleSummary
+                            );
+
+    // 删除博客, 成功返回1， 失败返回0
+    public int deleteBlog(String blogID);
+
+    // 博客被点赞了，成功返回1， 失败返回0
+    public int addBlogLikes(String blogID);
+
+    // 博客被取消点赞了，成功返回1， 失败返回0
+    public int cancelBlogLikes(String blogID);
+
+    // 博客被收藏了，成功返回1， 失败返回0
+    public int addBlogCollects(String blogID);
+
+    // 博客被取消收藏了，成功返回1， 失败返回0
+    public int cancelBlogCollects(String blogID);
+
+    // 博客被阅读了, 增加阅读量
+    public int addBlogReaded(String blogID);
+
+
 
 
 }

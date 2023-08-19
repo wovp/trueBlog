@@ -7,6 +7,8 @@ import lombok.Data;
 public class Blog {
 
   private int id;
+  private int author_id;
+  private int readed;
   private String author;
   @TableField(value = "articleTitle")
   private String articleTitle;
@@ -21,5 +23,7 @@ public class Blog {
 
   private long likes;
   private long collects;
+
+
 
 }
