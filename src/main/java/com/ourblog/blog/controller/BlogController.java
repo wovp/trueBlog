@@ -7,14 +7,21 @@ import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.service.impl.BlogImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.poi.POIXMLDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName: BlogController
@@ -26,7 +33,7 @@ import java.util.List;
  */
 @RestController
 @CrossOrigin(origins = "*")
-@Api(tags = "首页和博客详情页的模块")
+@Api(tags = "首页 博客详情页 博客发布的模块")
 public class BlogController {
 
     @Autowired
@@ -98,4 +105,9 @@ public class BlogController {
         result.setCode("200");
         return result;
     }
+
+
+    // --------------------------------
+    // 下面是引入的 解析word文档的函数
+
 }
