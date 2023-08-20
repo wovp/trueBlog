@@ -2,6 +2,8 @@ package com.ourblog.blog.pojo;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class User {
 
@@ -12,7 +14,7 @@ public class User {
   private String email;
   private String password;
   private java.sql.Timestamp registrationDate;
-  private java.sql.Timestamp birthday;
+  private Date birthday;
   private java.sql.Timestamp lastLogin;
   private long isDelete;
   private String avatar;
