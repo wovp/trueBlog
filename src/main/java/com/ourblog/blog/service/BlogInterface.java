@@ -42,6 +42,7 @@ public interface BlogInterface {
                            String articleSummary
                             );
 
+
     // 删除博客, 成功返回1， 失败返回0
     public int deleteBlog(String blogID);
 

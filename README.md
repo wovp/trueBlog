@@ -17,6 +17,6 @@ https://huaweicloud.csdn.net/63874ed2dacf622b8df8a979.html?spm=1001.2101.3001.66
 若是没找到，就先写通用的接口，如：登录，注册，发布博客之类的。
 
 
-word文档处理：http://www.demodashi.com/demo/16864.html
+word文档处理：https://blog.csdn.net/qq_26383975/article/details/112613550
 
 自动化接口：https://doc.xiaominfo.com/

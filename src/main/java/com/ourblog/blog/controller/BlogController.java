@@ -109,5 +109,18 @@ public class BlogController {
 
     // --------------------------------
     // 下面是引入的 解析word文档的函数
-
+    @ApiOperation(value = "上传word文档发布博客",
+            protocols = "http",
+            httpMethod = "GET",
+            consumes="file",
+            response=Result.class,
+            notes = "code:200 表示成功"
+    )
+    @PostMapping("/api/blog/addBlogByWord")
+    public Result addBlogByWord(@RequestParam(value = "file", required = true) MultipartFile file){
+        Result result = new Result();
+        result.setResult(blogImpl.getBlogList());
+        result.setCode("200");
+        return result;
+    }
 }
