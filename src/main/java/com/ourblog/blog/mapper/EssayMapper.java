@@ -1,14 +1,14 @@
 package com.ourblog.blog.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ourblog.blog.pojo.User;
+import com.ourblog.blog.pojo.Essay;
 
 /**
- * ClassName: UserMapper
+ * ClassName: EssayMapper
  * Package: com.ourblog.blog.mapper
  * Description:
  * Author: my
- * Creat: 2023/8/19 10:40
+ * Creat: 2023/8/20 19:26
  */
-public interface UserMapper extends BaseMapper<User> {
+public interface EssayMapper extends BaseMapper<Essay> {
 }

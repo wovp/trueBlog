@@ -1,27 +1,14 @@
 package com.ourblog.blog.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.ourblog.blog.mapper.BlogMapper;
-import com.ourblog.blog.pojo.Blog;
 import com.ourblog.blog.pojo.Result;
-import com.ourblog.blog.service.impl.BlogImpl;
+import com.ourblog.blog.service.impl.EssayImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.poi.POIXMLDocument;
-import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * ClassName: BlogController
@@ -34,10 +21,10 @@ import java.util.Map;
 @RestController
 @CrossOrigin(origins = "*")
 @Api(tags = "首页 博客详情页 博客发布的模块")
-public class BlogController {
+public class EssayController {
 
     @Autowired
-    BlogImpl blogImpl;
+    EssayImpl essayImpl;
     @ApiOperation(value = "查询所有博客列表",
             protocols = "http",
             httpMethod = "GET",
@@ -46,25 +33,25 @@ public class BlogController {
             notes = "code:200 表示成功"
     )
     @GetMapping("/api/blog/getBlogList")
-    public Result getBlogList(){
+    public Result getEssayList(){
         Result result = new Result();
-        result.setResult(blogImpl.getBlogList());
+        result.setResult(essayImpl.getEssayList());
         result.setCode("200");
         return result;
     }
 
     @GetMapping("/api/blog/getBlogDetail")
-    public Result getBlogDetail(String id){
+    public Result getEssayDetail(String id){
         Result result = new Result();
-        result.setResult(blogImpl.getBlogDetail(id));
+        result.setResult(essayImpl.getEssayDetail(id));
         result.setCode("200");
         return result;
     }
 
     @PostMapping("/api/blog/addBlog")
-    public Result addBlog(String author_id, String author, String articleTitle, String articleContent, String articleCategories, String publishDate, String articleSummary){
+    public Result addEssay(String author_id, String author, String articleTitle, String articleContent, String articleCategories, String publishDate, String articleSummary){
         Result result = new Result();
-        int i = blogImpl.publishBlog(author_id, author, articleTitle, articleContent, articleCategories, publishDate, articleSummary);
+        int i = essayImpl.publishEssay(author_id, author, articleTitle, articleContent, articleCategories, publishDate, articleSummary);
         if(i == 1) {
             result.setCode("200");
         }
@@ -75,33 +62,33 @@ public class BlogController {
     }
 
     @GetMapping("/api/blog/deleteBlog")
-    public Result deleteBlog(String id){
+    public Result deleteEssay(String id){
         Result result = new Result();
-        result.setResult(blogImpl.deleteBlog(id));
+        result.setResult(essayImpl.deleteEssay(id));
         result.setCode("200");
         return result;
     }
 
     @GetMapping("/api/blog/addBlogLikes")
-    public Result addBlogLikes(String id){
+    public Result addEssayLikes(String id){
         Result result = new Result();
-        result.setResult(blogImpl.addBlogLikes(id));
+        result.setResult(essayImpl.addEssayLikes(id));
         result.setCode("200");
         return result;
     }
 
     @GetMapping("/api/blog/cancelBlogLikes")
-    public Result cancelBlogLikes(String id){
+    public Result cancelEssayLikes(String id){
         Result result = new Result();
-        result.setResult(blogImpl.cancelBlogLikes(id));
+        result.setResult(essayImpl.cancelEssayLikes(id));
         result.setCode("200");
         return result;
     }
 
     @GetMapping("/api/blog/addBlogReaded")
-    public Result addBlogReaded(String id){
+    public Result addEssayReaded(String id){
         Result result = new Result();
-        result.setResult(blogImpl.addBlogReaded(id));
+        result.setResult(essayImpl.addEssayReaded(id));
         result.setCode("200");
         return result;
     }
@@ -117,9 +104,9 @@ public class BlogController {
             notes = "code:200 表示成功"
     )
     @PostMapping("/api/blog/addBlogByWord")
-    public Result addBlogByWord(@RequestParam(value = "file", required = true) MultipartFile file){
+    public Result addEssayByWord(@RequestParam(value = "file", required = true) MultipartFile file){
         Result result = new Result();
-        result.setResult(blogImpl.getBlogList());
+        result.setResult(essayImpl.getEssayList());
         result.setCode("200");
         return result;
     }

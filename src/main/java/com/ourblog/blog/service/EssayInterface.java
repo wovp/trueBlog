@@ -1,6 +1,6 @@
 package com.ourblog.blog.service;
 
-import com.ourblog.blog.pojo.Blog;
+import com.ourblog.blog.pojo.Essay;
 import com.ourblog.blog.pojo.User;
 
 import java.util.List;
@@ -14,26 +14,26 @@ import java.util.List;
  */
 
 // 首页 和 分类页面 和 博客详情页（不包含评论） 和 博客发布页 的接口
-public interface BlogInterface {
+public interface EssayInterface {
     // 根据传入的分类搜索博客列表
-    public List<Blog> getBlogListByCategory(String category);
+    public List<Essay> getEssayListByCategory(String category);
 
     // 根据关键词搜索博客标题
-    public List<Blog> getBlogListByKeyInTitle(String keyWord);
+    public List<Essay> getEssayListByKeyInTitle(String keyWord);
 
     // 获取所有博客列表
-    public List<Blog> getBlogList();
+    public List<Essay> getEssayList();
 
 
     // 根据博客ID获取博客详情内容,应该是博客的所有内容，也就是一个博客对象
-    public Blog getBlogDetail(String blogID);
+    public Essay getEssayDetail(String EssayID);
 
 
     // 根据点赞量排序获取前五个点赞量最高的博客
-    public List<Blog> getBlogListByLikes();
+    public List<Essay> getEssayListByLikes();
 
     // 发布博客, 成功返回1， 失败返回0
-    public int publishBlog(String author_id,
+    public int publishEssay(String author_id,
             String author,
                            String articleTitle,
                            String articleContent,
@@ -44,25 +44,25 @@ public interface BlogInterface {
 
 
     // 删除博客, 成功返回1， 失败返回0
-    public int deleteBlog(String blogID);
+    public int deleteEssay(String EssayID);
 
     // 博客被点赞了，成功返回1， 失败返回0
-    public int addBlogLikes(String blogID);
+    public int addEssayLikes(String EssayID);
 
     // 博客被取消点赞了，成功返回1， 失败返回0
-    public int cancelBlogLikes(String blogID);
+    public int cancelEssayLikes(String EssayID);
 
     // 博客被收藏了，成功返回1， 失败返回0
-    public int addBlogCollects(String blogID);
+    public int addEssayCollects(String EssayID);
 
     // 博客被取消收藏了，成功返回1， 失败返回0
-    public int cancelBlogCollects(String blogID);
+    public int cancelEssayCollects(String EssayID);
 
     // 博客被阅读了, 增加阅读量
-    public int addBlogReaded(String blogID);
+    public int addEssayReaded(String EssayID);
 
     // 返回发布博客的个人信息，用于博客详情页面使用
-    User getBlogAuthor(String authorID);
+    User getEssayAuthor(String authorID);
 
 
 

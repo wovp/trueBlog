@@ -1,17 +1,17 @@
 package com.ourblog.blog.pojo;
 
 import lombok.Data;
-import org.springframework.http.converter.StringHttpMessageConverter;
 
 /**
  * ClassName: Result
  * Package: com.ourblog.blog.pojo
  * Description:
  * Author: my
- * Creat: 2023/8/18 16:36
+ * Creat: 2023/8/20 20:06
+ * @author 11
  */
 @Data
 public class Result {
-    String code;
-    Object result;
+    private String code;
+    private Object result;
 }

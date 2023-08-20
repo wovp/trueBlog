@@ -1,6 +1,5 @@
 package com.ourblog.blog.service;
 
-import com.ourblog.blog.pojo.Blog;
 import com.ourblog.blog.pojo.User;
 
 import java.util.Date;
@@ -21,7 +20,7 @@ public interface UserInterface {
 
     // login 暂定，等token看明白后再定
 
-    // logout 让前端删除本地储存
+    // logout 让 前端 删除本地储存
 
     // 注册用户，返回 1 注册成功， 0 为失败
     public int registerUser(User user);
@@ -39,7 +38,7 @@ public interface UserInterface {
     //用户点赞过的文章,点赞是否需要单独建表？
     public List<Blog> likelog(String userID);
     //用户点赞过的评论
-    public List<Comment> likecomment(String userID);
+    // public List<Comment> likecomment(String userID);
 
 
 
