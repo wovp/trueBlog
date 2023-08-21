@@ -1,15 +1,24 @@
 package com.ourblog.blog.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ourblog.blog.pojo.Essay;
 import com.ourblog.blog.pojo.User;
 import com.ourblog.blog.service.EssayInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.awt.image.TileObserver;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * ClassName: BlogImpl
@@ -26,101 +35,112 @@ public class EssayImpl implements EssayInterface {
     @Autowired(required = false)
     JdbcTemplate jdbcTemplate;
     @Override
-    public List<Essay> getEssayListByCategory(String category) {
+    public List<Map<String, Object>> getEssayListByCategory(String category) {
+        String sql = "select essay.essayid, classify, title, viewnumber, author, likenumber,colletnumber, briefintro from classify, classfy_to_essay, essay where classify.id = classfy_to_essay.classfy_id and classfy_to_essay.essayid = essay.essayid and classify.classify = ?";
+        List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql, category);
 
-        QueryWrapper<Essay> query = new QueryWrapper<>();
-        query.eq("articleCategories", category);
-        List<Essay> Essays = EssayMapper.selectList(query);
-
-        return Essays;
+        return EssayList;
     }
 
     @Override
-    public List<Essay> getEssayListByKeyInTitle(String keyWord) {
-        QueryWrapper<Essay> query = new QueryWrapper<>();
-        query.like("articleTitle", keyWord);
-        List<Essay> Essays = EssayMapper.selectList(query);
+    public List<Map<String, Object>> getEssayListByKeyInTitle(String keyWord) {
+        String sql = "select essay.essayid ,classify, title, viewnumber, author, likenumber,colletnumber, briefintro from classify, classfy_to_essay, essay where classify.id = classfy_to_essay.classfy_id and classfy_to_essay.essayid = essay.essayid and essay.title like " + keyWord;
+        System.out.println(sql);
+        List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql);
 
-        return Essays;
+
+        return EssayList;
     }
 
     @Override
-    public List<Essay> getEssayList() {
-        QueryWrapper<Essay> query = new QueryWrapper<>();
-        query.select("id", "author", "articleTitle", "articleCategories", "publishDate", "articleSummary", "likes", "collects");
-        List<Essay> Essays = EssayMapper.selectList(query);
-        return Essays;
+    public List<Map<String, Object>> getEssayList() {
+        String sql = "select essay.essayid ,classify, title, viewnumber, author, likenumber,colletnumber, briefintro from classify, classfy_to_essay, essay where classify.id = classfy_to_essay.classfy_id and classfy_to_essay.essayid = essay.essayid";
+        List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql);
+        return EssayList;
     }
 
     @Override
-    public Essay getEssayDetail(String EssayID) {
-        Essay Essay = EssayMapper.selectById(EssayID);
-        return Essay;
+    public List<Map<String, Object>> getEssayDetail(String EssayID) {
+        String sql = "select essay.essayid, author, content, likenumber, colletnumber from essay where essayid = ?";
+        List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql, EssayID);
+        return EssayList;
     }
 
     @Override
     public List<Essay> getEssayListByLikes() {
-        QueryWrapper<Essay> query = new QueryWrapper<>();
-        query.orderByDesc("likes").last("limit 5");
-        List<Essay> Essays = EssayMapper.selectList(query);
-        return Essays;
+
+
+
+        return null;
+    }
+
+
+    @Override
+    public int publishEssay(String author_id, String author, String articleTitle, String articleContent,  String classfy, String publishDate, String articleSummary, String picurl) {
+        // 先插入文章数据库
+        String sql_essay = "insert into essay (userid, author, title, content, briefintro, viewnumber, likenumber, colletnumber) value (?, ? ,? ,? ,? ,0, 0 ,0 )";
+        KeyHolder keyHolder_essay = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                // 指定主键
+                PreparedStatement preparedStatement = connection.prepareStatement(sql_essay, new String[]{"essayid"});
+                preparedStatement.setInt(1, Integer.parseInt(author_id));
+                preparedStatement.setString(2, author);
+                preparedStatement.setString(3, articleTitle);
+                preparedStatement.setString(4, articleContent);
+                preparedStatement.setString(5, articleSummary);
+                return preparedStatement;
+            }
+        }, keyHolder_essay);
+        // 得到插入文章的主键ID
+        int essay_id = Objects.requireNonNull(keyHolder_essay.getKey()).intValue();
+
+        // 得到插入文章的分类id
+        String sql_classify = "select id from classify where classify = ?";
+        Map<String, Object> classify_map = jdbcTemplate.queryForMap(sql_classify, classfy);
+        String classify_id = String.valueOf(classify_map.get("id"));
+
+        System.out.println(picurl);
+        System.out.println("pic_url");
+        // 通过文章id 和 图片url 插入图片数据库
+        String sql_pic = "insert into picture (essayid, pictureurl) value(?, ?)";
+        jdbcTemplate.update(sql_pic,essay_id, picurl);
+
+        // 通过文章id 和 分类id 插入文章和分类表内
+        String sql_es_cla = "insert into classfy_to_essay (classfy_id, essayid) value(?, ?)";
+        int update = jdbcTemplate.update(sql_es_cla, classify_id, essay_id);
+
+
+
+        return update;
+
+
     }
 
     @Override
-    public int publishEssay(String author_id, String author, String articleTitle, String articleContent, String articleCategories, String publishDate, String articleSummary) {
+    public int publishEssayPicture() {
         return 0;
     }
 
-    /*@Override
-    public int publishEssay(String author_id, String author, String articleTitle, String articleContent, String articleCategories, String publishDate, String articleSummary) {
-        Essay Essay = new Essay(author_id, author, articleTitle, articleContent, articleCategories, publishDate, articleSummary);
-        int insert = EssayMapper.insert(Essay);
-        return insert;
-    }*/
-
     @Override
     public int deleteEssay(String EssayID) {
-        QueryWrapper<Essay> query = new QueryWrapper<>();
-        query.eq("id", EssayID);
-        int delete = EssayMapper.delete(query);
-        return delete;
+        return 0;
     }
 
     @Override
     public int addEssayLikes(String EssayID) {
-        UpdateWrapper<Essay> update = new UpdateWrapper<>();
-        update.setSql("likes = likes + 1");
-        Essay Essay = EssayMapper.selectById(EssayID);
-        int update1 = EssayMapper.update(Essay, update);
-        return update1;
+        return 0;
     }
 
     @Override
     public int cancelEssayLikes(String EssayID) {
         return 0;
     }
-
-    /*@Override
-    public int cancelEssayLikes(String EssayID) {
-        UpdateWrapper<Essay> update = new UpdateWrapper<>();
-        update.setSql("likes = likes - 1");
-        Essay Essay = EssayMapper.selectById(EssayID);
-
-        // 当点赞数为0 不能取消点赞
-        if(Essay.getLikes() == 0){
-            return 0;
-        }
-        int update1 = EssayMapper.update(Essay, update);
-        return update1;
-    }*/
 
     @Override
     public int addEssayCollects(String EssayID) {
-        UpdateWrapper<Essay> update = new UpdateWrapper<>();
-        update.setSql("collects = collects + 1");
-        Essay Essay = EssayMapper.selectById(EssayID);
-        int update1 = EssayMapper.update(Essay, update);
-        return update1;
+        return 0;
     }
 
     @Override
@@ -128,33 +148,15 @@ public class EssayImpl implements EssayInterface {
         return 0;
     }
 
-    /*@Override
-    public int cancelEssayCollects(String EssayID) {
-        UpdateWrapper<Essay> update = new UpdateWrapper<>();
-        update.setSql("collects = collects - 1");
-        Essay Essay = EssayMapper.selectById(EssayID);
-
-        // 当收藏数为0
-        if(Essay.getLikes() == 0){
-            return 0;
-        }
-        int update1 = EssayMapper.update(Essay, update);
-        return update1;
-    }*/
-
     @Override
     public int addEssayReaded(String EssayID) {
-        UpdateWrapper<Essay> update = new UpdateWrapper<>();
-        update.setSql("readed = readed + 1");
-        Essay Essay = EssayMapper.selectById(EssayID);
-        int update1 = EssayMapper.update(Essay, update);
-        return update1;
-
+        return 0;
     }
 
     @Override
     public User getEssayAuthor(String authorID) {
         return null;
     }
+
 
 }

@@ -4,6 +4,7 @@ import com.ourblog.blog.pojo.Essay;
 import com.ourblog.blog.pojo.User;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName: Article
@@ -16,33 +17,26 @@ import java.util.List;
 // 首页 和 分类页面 和 博客详情页（不包含评论） 和 博客发布页 的接口
 public interface EssayInterface {
     // 根据传入的分类搜索博客列表
-    public List<Essay> getEssayListByCategory(String category);
+    public List<Map<String, Object>> getEssayListByCategory(String category);
 
     // 根据关键词搜索博客标题
-    public List<Essay> getEssayListByKeyInTitle(String keyWord);
+    public List<Map<String, Object>> getEssayListByKeyInTitle(String keyWord);
 
     // 获取所有博客列表
-    public List<Essay> getEssayList();
+    public List<Map<String, Object>> getEssayList();
 
 
     // 根据博客ID获取博客详情内容,应该是博客的所有内容，也就是一个博客对象
-    public Essay getEssayDetail(String EssayID);
+    public List<Map<String, Object>> getEssayDetail(String EssayID);
 
 
     // 根据点赞量排序获取前五个点赞量最高的博客
     public List<Essay> getEssayListByLikes();
 
     // 发布博客, 成功返回1， 失败返回0
-    public int publishEssay(String author_id,
-            String author,
-                           String articleTitle,
-                           String articleContent,
-                           String articleCategories,
-                           String publishDate,
-                           String articleSummary
-                            );
-
-
+    int publishEssay(String author_id, String author, String articleTitle, String articleContent, String classfy, String publishDate, String articleSummary, String pic_url);
+    // 发布博客的封面
+    int publishEssayPicture();
     // 删除博客, 成功返回1， 失败返回0
     public int deleteEssay(String EssayID);
 
