@@ -3,6 +3,7 @@ package com.ourblog.blog.pojo;
 
 public class User {
 
+  public int getGender;
   private String avatar;
   private java.sql.Date birthday;
   private long phonenumber;
@@ -104,4 +105,7 @@ public class User {
     this.username = username;
   }
 
+  public Object getGender() {
+      return null;
+  }
 }

@@ -19,7 +19,7 @@ import java.util.List;
  * Creat: 2023/8/19 10:44
  */
 @Repository
-public class EssayImpl implements EssayInterface {
+public abstract class EssayImpl implements EssayInterface {
     @Autowired(required = false)
     com.ourblog.blog.mapper.EssayMapper EssayMapper;
 
@@ -66,12 +66,12 @@ public class EssayImpl implements EssayInterface {
         return Essays;
     }
 
-    @Override
+    /*@Override
     public int publishEssay(String author_id, String author, String articleTitle, String articleContent, String articleCategories, String publishDate, String articleSummary) {
         Essay Essay = new Essay(author_id, author, articleTitle, articleContent, articleCategories, publishDate, articleSummary);
         int insert = EssayMapper.insert(Essay);
         return insert;
-    }
+    }*/
 
     @Override
     public int deleteEssay(String EssayID) {
