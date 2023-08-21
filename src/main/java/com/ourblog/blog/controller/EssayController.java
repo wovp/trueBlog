@@ -40,6 +40,26 @@ public class EssayController {
         return result;
     }
 
+    @GetMapping("/api/blog/getEssayListByCategory")
+    public Result getEssayListByCategory(String classify){
+        Result result = new Result();
+        result.setResult(essayImpl.getEssayListByCategory(classify));
+        result.setCode("200");
+        return result;
+    }
+
+
+
+    @GetMapping("/api/blog/getBlogByKeyword")
+    public Result getBlogByKeyword(String keyword){
+        Result result = new Result();
+        keyword = "'%" + keyword + "%'";
+        result.setResult(essayImpl.getEssayListByKeyInTitle(keyword));
+        result.setCode("200");
+        return result;
+    }
+
+
     @GetMapping("/api/blog/getBlogDetail")
     public Result getEssayDetail(String id){
         Result result = new Result();
@@ -47,6 +67,8 @@ public class EssayController {
         result.setCode("200");
         return result;
     }
+
+
 
     @PostMapping("/api/blog/addBlog")
     public Result addEssay(String author_id, String author, String articleTitle, String articleContent, String articleCategories, String publishDate, String articleSummary){
