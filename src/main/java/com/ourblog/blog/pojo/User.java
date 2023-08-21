@@ -1,6 +1,9 @@
 package com.ourblog.blog.pojo;
 
 
+import lombok.Data;
+import lombok.ToString;
+@Data
 public class User {
 
   public int getGender;
@@ -108,4 +111,5 @@ public class User {
   public Object getGender() {
       return null;
   }
+
 }

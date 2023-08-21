@@ -28,14 +28,34 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 @Api(tags = "用户个人信息展示、注册的模块")
 public class UserController {
-    @Autowired(required= false)
+    @Autowired
     private JdbcTemplate jdbc;
-
+    @Autowired
     UserImpl userImpl;
     @PostMapping("/api/blog/registerUser")
     public Result registerUser(@RequestBody User user){
         Result result = new Result();
+        System.out.println("user 输出");
+        System.out.println(user);
         result=userImpl.registerUser(user);
+        return result;
+    }
+    @GetMapping("/api/blog/getUserInfo")
+    public Result getUserInfo( String username){
+        Result result = new Result();
+        result=userImpl.getUserInfo(username);
+        return result;
+    }
+    @GetMapping("/api/blog/getfans")
+    public Result getfans(String username) {
+        Result result = new Result();
+        result=userImpl.getfans(username);
+        return result;
+    }
+    @PostMapping("/api/blog/updateUserInfo")
+    public Result updateUserInfo(@RequestBody User user){
+        Result result = new Result();
+        result=userImpl.updateUserInfo(user);
         return result;
     }
 
