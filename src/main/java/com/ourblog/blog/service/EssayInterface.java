@@ -34,14 +34,7 @@ public interface EssayInterface {
     public List<Essay> getEssayListByLikes();
 
     // 发布博客, 成功返回1， 失败返回0
-    public int publishEssay(String author_id,
-            String author,
-                           String articleTitle,
-                           String articleContent,
-                           String articleCategories,
-                           String publishDate,
-                           String articleSummary
-                            );
+    int publishEssay(String author_id, String author, String articleTitle, String articleContent, String classfy, String publishDate, String articleSummary);
 
 
     // 删除博客, 成功返回1， 失败返回0

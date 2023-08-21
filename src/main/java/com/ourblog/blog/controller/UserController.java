@@ -33,9 +33,10 @@ public class UserController {
 
     UserImpl userImpl;
     @PostMapping("/api/blog/registerUser")
-    public Result registerUser(@RequestBody User user){
+    public Result registerUser(User user){
         Result result = new Result();
-        result=userImpl.registerUser(user);
+        System.out.println(user);
+        // result=userImpl.registerUser(user);
         return result;
     }
 

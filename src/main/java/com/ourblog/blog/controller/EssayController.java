@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName: BlogController
@@ -71,8 +72,17 @@ public class EssayController {
 
 
     @PostMapping("/api/blog/addBlog")
-    public Result addEssay(String author_id, String author, String articleTitle, String articleContent, String articleCategories, String publishDate, String articleSummary){
+    public Result addEssay(@RequestBody Map<String,Object> map , author_id, String author, String articleTitle, String articleContent, String articleCategories, String publishDate, String articleSummary){
         Result result = new Result();
+        String author_id = (String) map.get("author_id");
+        String author = (String) map.get("author");
+        String articleTitle = (String) map.get("articleTitle");
+        String articleContent = map.get("articleContent");
+        String articleCategories = map.get("articleCategories");
+        String publishDate = map.get("publishDate");
+        String articleSummary = map.get("articleSummary");
+
+        System.out.println("进入addContorller");
         int i = essayImpl.publishEssay(author_id, author, articleTitle, articleContent, articleCategories, publishDate, articleSummary);
         if(i == 1) {
             result.setCode("200");
