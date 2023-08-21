@@ -4,6 +4,7 @@ import com.ourblog.blog.pojo.Essay;
 import com.ourblog.blog.pojo.User;
 import com.ourblog.blog.service.EssayInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -73,8 +74,9 @@ public class EssayImpl implements EssayInterface {
         return null;
     }
 
+
     @Override
-    public int publishEssay(String author_id, String author, String articleTitle, String articleContent,  String publishDate, String articleSummary, String classfy) {
+    public int publishEssay(String author_id, String author, String articleTitle, String articleContent,  String classfy, String publishDate, String articleSummary, String picurl) {
         // 先插入文章数据库
         String sql_essay = "insert into essay (userid, author, title, content, briefintro, viewnumber, likenumber, colletnumber) value (?, ? ,? ,? ,? ,0, 0 ,0 )";
         KeyHolder keyHolder_essay = new GeneratedKeyHolder();
@@ -95,17 +97,30 @@ public class EssayImpl implements EssayInterface {
         int essay_id = Objects.requireNonNull(keyHolder_essay.getKey()).intValue();
 
         // 得到插入文章的分类id
-        String sql_classify = "select id from classify where classfy = ?";
-        List<Map<String, Object>> classify_map = jdbcTemplate.queryForList(sql_classify, classfy);
-        String classify_id = String.valueOf(classify_map.get(0));
+        String sql_classify = "select id from classify where classify = ?";
+        Map<String, Object> classify_map = jdbcTemplate.queryForMap(sql_classify, classfy);
+        String classify_id = String.valueOf(classify_map.get("id"));
+
+        System.out.println(picurl);
+        System.out.println("pic_url");
+        // 通过文章id 和 图片url 插入图片数据库
+        String sql_pic = "insert into picture (essayid, pictureurl) value(?, ?)";
+        jdbcTemplate.update(sql_pic,essay_id, picurl);
 
         // 通过文章id 和 分类id 插入文章和分类表内
         String sql_es_cla = "insert into classfy_to_essay (classfy_id, essayid) value(?, ?)";
         int update = jdbcTemplate.update(sql_es_cla, classify_id, essay_id);
 
+
+
         return update;
 
 
+    }
+
+    @Override
+    public int publishEssayPicture() {
+        return 0;
     }
 
     @Override
