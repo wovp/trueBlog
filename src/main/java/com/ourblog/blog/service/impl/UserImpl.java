@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
 
-public abstract class UserImpl implements UserInterface {
+public  class UserImpl implements UserInterface {
     private JdbcTemplate jdbc;
 
     @Override
@@ -97,5 +97,25 @@ public abstract class UserImpl implements UserInterface {
     public List<Blog> likelog(String userID) {
         return null;
     }*/
+    }
+
+    @Override
+    public int updateUserInfo(User user) {
+        return 0;
+    }
+
+    @Override
+    public String forgetpassword() {
+        return null;
+    }
+
+    @Override
+    public List<User> getlike(String userID) {
+        return null;
+    }
+
+    @Override
+    public List<User> getfans(String userID) {
+        return null;
     }
 }

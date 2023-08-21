@@ -19,7 +19,7 @@ import java.util.List;
  * Creat: 2023/8/19 10:44
  */
 @Repository
-public abstract class EssayImpl implements EssayInterface {
+public class EssayImpl implements EssayInterface {
     @Autowired(required = false)
     com.ourblog.blog.mapper.EssayMapper EssayMapper;
 
@@ -66,6 +66,11 @@ public abstract class EssayImpl implements EssayInterface {
         return Essays;
     }
 
+    @Override
+    public int publishEssay(String author_id, String author, String articleTitle, String articleContent, String articleCategories, String publishDate, String articleSummary) {
+        return 0;
+    }
+
     /*@Override
     public int publishEssay(String author_id, String author, String articleTitle, String articleContent, String articleCategories, String publishDate, String articleSummary) {
         Essay Essay = new Essay(author_id, author, articleTitle, articleContent, articleCategories, publishDate, articleSummary);
@@ -92,6 +97,11 @@ public abstract class EssayImpl implements EssayInterface {
 
     @Override
     public int cancelEssayLikes(String EssayID) {
+        return 0;
+    }
+
+    /*@Override
+    public int cancelEssayLikes(String EssayID) {
         UpdateWrapper<Essay> update = new UpdateWrapper<>();
         update.setSql("likes = likes - 1");
         Essay Essay = EssayMapper.selectById(EssayID);
@@ -102,7 +112,7 @@ public abstract class EssayImpl implements EssayInterface {
         }
         int update1 = EssayMapper.update(Essay, update);
         return update1;
-    }
+    }*/
 
     @Override
     public int addEssayCollects(String EssayID) {
@@ -115,6 +125,11 @@ public abstract class EssayImpl implements EssayInterface {
 
     @Override
     public int cancelEssayCollects(String EssayID) {
+        return 0;
+    }
+
+    /*@Override
+    public int cancelEssayCollects(String EssayID) {
         UpdateWrapper<Essay> update = new UpdateWrapper<>();
         update.setSql("collects = collects - 1");
         Essay Essay = EssayMapper.selectById(EssayID);
@@ -125,7 +140,7 @@ public abstract class EssayImpl implements EssayInterface {
         }
         int update1 = EssayMapper.update(Essay, update);
         return update1;
-    }
+    }*/
 
     @Override
     public int addEssayReaded(String EssayID) {

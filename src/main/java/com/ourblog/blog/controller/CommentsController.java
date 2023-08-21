@@ -1,7 +1,7 @@
 package com.ourblog.blog.controller;
 
 import com.ourblog.blog.pojo.Result;
-import com.ourblog.blog.service.impl.CommentsImpl;
+//import com.ourblog.blog.service.impl.CommentsImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.List;
 @Api(tags = "博客详情页的评论 （重点是评论） 接口")
 public class CommentsController {
 
-    @Autowired(required = false)
+    /*@Autowired(required = false)
     CommentsImpl commentsImpl;
     @ApiOperation(value = "根据博客id查询所有评论列表",
             protocols = "http",
@@ -40,5 +40,5 @@ public class CommentsController {
         result.setResult(commentsImpl.showCommentsList(Integer.parseInt(id)));
         result.setCode("200");
         return result;
-    }
+    }*/
 }
