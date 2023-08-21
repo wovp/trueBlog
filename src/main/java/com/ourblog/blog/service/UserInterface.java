@@ -34,9 +34,9 @@ public interface UserInterface {
     //用户的粉丝
     public List<User> getfans(String userID);
     //用户发表的博文
-    public List<Blog> publishblog(String userID);
+    //public List<Blog> publishblog(String userID);
     //用户点赞过的文章,点赞是否需要单独建表？
-    public List<Blog> likelog(String userID);
+    //public List<Blog> likelog(String userID);
     //用户点赞过的评论
     // public List<Comment> likecomment(String userID);
 
