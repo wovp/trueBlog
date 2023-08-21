@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +24,7 @@ import java.util.UUID;
  */
 @RestController
 @CrossOrigin(origins = "*")
-@Api(tags = "首页 博客详情页 博客发布的模块")
+@Api(tags = "首页 博客详情页 博客发布的模块 还有个人中心对博客的操作模块")
 public class EssayController {
 
     @Autowired
@@ -48,7 +47,7 @@ public class EssayController {
     @GetMapping("/api/blog/getEssayListByCategory")
     public Result getEssayListByCategory(String classify){
         Result result = new Result();
-        result.setResult(essayImpl.getEssayListByCategory(classify));
+        result.setResult(essayImpl.getEssayListByCategory());
         result.setCode("200");
         return result;
     }
@@ -108,7 +107,7 @@ public class EssayController {
 
     // 获得上传的文件，并且返回储存的地址
     @PostMapping(value = "/api/blog/addBlogPic")
-    public String fileUpload(@RequestParam(value = "file") MultipartFile file) {
+    public Result fileUpload(@RequestParam(value = "file") MultipartFile file) {
         if (file.isEmpty()) {
             System.out.println("文件为空空");
         }
@@ -128,14 +127,26 @@ public class EssayController {
             e.printStackTrace();
         }
         String getFilePath = "/image/" + fileName;
-        return getFilePath;
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(getFilePath);
+        System.out.println(result.getResult());
+        return result;
+    }
+
+    @GetMapping("/api/blog/getBlogListLikes")
+    public Result getBlogListLikes(){
+        Result result = new Result();
+        result.setResult(essayImpl.getEssayListByLikes());
+        result.setCode("200");
+        return result;
     }
 
 
     @GetMapping("/api/blog/deleteBlog")
     public Result deleteEssay(String id){
         Result result = new Result();
-        result.setResult(essayImpl.deleteEssay(id));
+        result.setResult(essayImpl.deleteEssay(id, id));
         result.setCode("200");
         return result;
     }
