@@ -2,6 +2,7 @@ package com.ourblog.blog.controller;
 import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.pojo.User;
 import com.ourblog.blog.service.impl.UserImpl;
+import com.sun.javafx.collections.MappingChange;
 import io.swagger.annotations.Api;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,7 @@ public class UserController {
     @GetMapping("/api/blog/getfans")
     public Result getfans(String username) {
         Result result = new Result();
+        System.out.println(username);
         result=userImpl.getfans(username);
         return result;
     }
@@ -77,4 +79,23 @@ public class UserController {
         result=userImpl.getpublishs(userid);
         return result;
     }
+    @GetMapping("/api/blog/getcollectblog")
+    public Result getcollectblog(String username) {
+        Result result = new Result();
+        result=userImpl.getcollectblog(username);
+        return result;
+    }
+    /*@PostMapping("/api/blog/unbook")
+    public Result (@RequestParam ){
+        Result result = new Result();
+        result=userImpl.forgetpass(user);
+        return result;
+    }
+    @PostMapping("/api/blog/oneunbook")
+    public Result oneunbook(@RequestBody(required = false)Map<String,Object> map, Integer userid){
+        Result result = new Result();
+        result=userImpl.oneunbook(map);
+        return result;
+    }*/
+
 }

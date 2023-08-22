@@ -1,6 +1,5 @@
 package com.ourblog.blog.service.impl;
 
-import com.ourblog.blog.pojo.Essay;
 import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.pojo.User;
 import com.ourblog.blog.pojo.UserPub;
@@ -10,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -221,6 +221,42 @@ public  class UserImpl implements UserInterface {
 
     }
 
+    @Override
+    public List<User> getlike(String userID) {
+        return null;
+    }
+
+    @Override
+    //查找用户发布过的文章
+    public Result getcollectblog(String username) {
+        Result result = new Result();
+
+        try {
+            try {
+                List<UserPub> essay= jdbc.query("select essay.essayid, title, viewnumber, likenumber, colletnumber, briefintro,pictureurl,classify from user left join\n" +
+                                "user_to_eassy_likes_collect_read co on user.userid = co.user_id left join essay on eassy_id= essayid\n" +
+                                "left join picture on essay.essayid=picture.essayid left join classfy_to_essay cte on essay.essayid = cte.essayid\n" +
+                                "left join classify c on cte.classfy_id = c.id where user.username = ? and essay.isDelete = 0 and YNcollect = 1 ",
+                        new BeanPropertyRowMapper<>(UserPub.class),username);
+                if(CollectionUtils.isEmpty(essay)){
+                    result.setCode("202");
+                    result.setResult("您还没发过文章哦！");
+                    return result;
+                }
+                result.setCode("200");
+                result.setResult(essay);
+                return result;
+            }catch (DataAccessException e){
+                result.setCode("202");
+                result.setResult("您还没发过文章哦！");
+                return result;
+            }
+        }catch (DataAccessException e){
+            result.setCode("201");
+            result.setResult("查找失败");
+            return result;
+        }
+    }
 
 
    /* @Override
@@ -233,8 +269,11 @@ public  class UserImpl implements UserInterface {
 
 
 
-    @Override
-    public List<User> getlike(String userID) {
-        return null;
-    }
+    /*@Override
+    public Result getlike(oneunbook) {
+        Result result = new Result();
+        try {
+            jdbc.queryForMap("")
+        }
+    }*/
 }
