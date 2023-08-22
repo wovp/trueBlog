@@ -1,21 +1,17 @@
 package com.ourblog.blog.service.impl;
 
-import com.ourblog.blog.pojo.Essay;
 import com.ourblog.blog.pojo.User;
 import com.ourblog.blog.service.EssayInterface;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.awt.image.TileObserver;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,50 +31,59 @@ public class EssayImpl implements EssayInterface {
     @Autowired(required = false)
     JdbcTemplate jdbcTemplate;
     @Override
-    public List<Map<String, Object>> getEssayListByCategory(String category) {
-        String sql = "select essay.essayid, classify, title, viewnumber, author, likenumber,colletnumber, briefintro from classify, classfy_to_essay, essay where classify.id = classfy_to_essay.classfy_id and classfy_to_essay.essayid = essay.essayid and classify.classify = ?";
-        List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql, category);
+    public List<Map<String, Object>> getEssayListByCategory() {
+        // 查出所有分类的列表
+        String sql = "select * from classify;";
+        List<Map<String, Object>> ClassifyList = jdbcTemplate.queryForList(sql);
 
-        return EssayList;
+        // 根据每个分类的列表，查找对应的文章列表
+        for (Map<String, Object> map: ClassifyList){
+            Object id =  map.get("id");
+            System.out.println("id = ");
+            System.out.println(id);
+            String id1 = id.toString();
+            String sql01 = "select title, likenumber, colletnumber, briefintro, author, pictureurl from classfy_to_essay ,essay, picture where classfy_to_essay.essayid = essay.essayid and essay.essayid = picture.essayid and classfy_id = ?";
+            List<Map<String, Object>> essay_list = jdbcTemplate.queryForList(sql01, id1);
+            map.put("title", essay_list);
+        }
+
+        return ClassifyList;
     }
 
     @Override
     public List<Map<String, Object>> getEssayListByKeyInTitle(String keyWord) {
-        String sql = "select essay.essayid ,classify, title, viewnumber, author, likenumber,colletnumber, briefintro from classify, classfy_to_essay, essay where classify.id = classfy_to_essay.classfy_id and classfy_to_essay.essayid = essay.essayid and essay.title like " + keyWord;
+        String sql = "select essay.essayid ,classify, title, viewnumber, author, likenumber,colletnumber, briefintro ,pictureurl from classify, classfy_to_essay, essay, picture where classify.id = classfy_to_essay.classfy_id and classfy_to_essay.essayid = essay.essayid and picture.essayid = essay.essayid and essay.title like " + keyWord;
         System.out.println(sql);
         List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql);
-
-
         return EssayList;
     }
 
     @Override
     public List<Map<String, Object>> getEssayList() {
-        String sql = "select essay.essayid ,classify, title, viewnumber, author, likenumber,colletnumber, briefintro from classify, classfy_to_essay, essay where classify.id = classfy_to_essay.classfy_id and classfy_to_essay.essayid = essay.essayid";
+        String sql = "select essay.essayid ,classify, title, viewnumber, author, likenumber,colletnumber, briefintro, pictureurl from classify, classfy_to_essay, essay, picture where classify.id = classfy_to_essay.classfy_id and classfy_to_essay.essayid = essay.essayid and picture.essayid = essay.essayid";
         List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql);
         return EssayList;
     }
 
     @Override
     public List<Map<String, Object>> getEssayDetail(String EssayID) {
-        String sql = "select essay.essayid, author, content, likenumber, colletnumber from essay where essayid = ?";
+        String sql = "select essay.essayid, author, content, likenumber, colletnumber, pictureurl from essay, picture where essay.essayid = ? and essay.essayid  = picture.essayid";
         List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql, EssayID);
         return EssayList;
     }
 
     @Override
-    public List<Essay> getEssayListByLikes() {
-
-
-
-        return null;
+    public List<Map<String, Object>> getEssayListByLikes() {
+        String sql = "select pictureurl, e.essayid from picture left join essay e on e.essayid = picture.essayid order by e.likenumber DESC limit 5";
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
+        return maps;
     }
 
 
     @Override
     public int publishEssay(String author_id, String author, String articleTitle, String articleContent,  String classfy, String publishDate, String articleSummary, String picurl) {
         // 先插入文章数据库
-        String sql_essay = "insert into essay (userid, author, title, content, briefintro, viewnumber, likenumber, colletnumber) value (?, ? ,? ,? ,? ,0, 0 ,0 )";
+        String sql_essay = "insert into essay (userid, author, title, content, briefintro, viewnumber, likenumber, colletnumber, isDelete) value (?, ? ,? ,? ,? ,0, 0 ,0, 0 )";
         KeyHolder keyHolder_essay = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
@@ -111,8 +116,6 @@ public class EssayImpl implements EssayInterface {
         String sql_es_cla = "insert into classfy_to_essay (classfy_id, essayid) value(?, ?)";
         int update = jdbcTemplate.update(sql_es_cla, classify_id, essay_id);
 
-
-
         return update;
 
 
@@ -124,8 +127,18 @@ public class EssayImpl implements EssayInterface {
     }
 
     @Override
-    public int deleteEssay(String EssayID) {
-        return 0;
+    public int deleteEssay(String EssayID, String UserID) {
+        // 删除 置1
+        String sql_de = "update essay set isDelete = 1 where essayid = ?";
+        String sql_qu = "select userid from essay where essayid = ?";
+        Map<String, Object> useridMap = jdbcTemplate.queryForMap(sql_qu, EssayID);
+        Object userid = useridMap.get("userid");
+        String userid_st = userid.toString();
+        int update = 0;
+        if (userid_st.equals(UserID)){
+            update = jdbcTemplate.update(sql_de, EssayID);
+        }
+        return update;
     }
 
     @Override

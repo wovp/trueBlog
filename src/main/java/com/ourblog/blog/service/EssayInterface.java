@@ -1,6 +1,5 @@
 package com.ourblog.blog.service;
 
-import com.ourblog.blog.pojo.Essay;
 import com.ourblog.blog.pojo.User;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.Map;
 // 首页 和 分类页面 和 博客详情页（不包含评论） 和 博客发布页 的接口
 public interface EssayInterface {
     // 根据传入的分类搜索博客列表
-    public List<Map<String, Object>> getEssayListByCategory(String category);
+    public List<Map<String, Object>> getEssayListByCategory();
 
     // 根据关键词搜索博客标题
     public List<Map<String, Object>> getEssayListByKeyInTitle(String keyWord);
@@ -31,14 +30,14 @@ public interface EssayInterface {
 
 
     // 根据点赞量排序获取前五个点赞量最高的博客
-    public List<Essay> getEssayListByLikes();
+    public List<Map<String, Object>> getEssayListByLikes();
 
     // 发布博客, 成功返回1， 失败返回0
     int publishEssay(String author_id, String author, String articleTitle, String articleContent, String classfy, String publishDate, String articleSummary, String pic_url);
     // 发布博客的封面
     int publishEssayPicture();
     // 删除博客, 成功返回1， 失败返回0
-    public int deleteEssay(String EssayID);
+    public int deleteEssay(String EssayID, String UserID);
 
     // 博客被点赞了，成功返回1， 失败返回0
     public int addEssayLikes(String EssayID);
