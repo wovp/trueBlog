@@ -144,33 +144,40 @@ public class EssayController {
 
 
     @GetMapping("/api/blog/deleteBlog")
-    public Result deleteEssay(String uid, String eid){
+    public Result deleteEssay(@RequestBody Map<String,Object> map){
+        String uid = map.get("uid").toString();
+        String eid = map.get("eid").toString();
         Result result = new Result();
         result.setResult(essayImpl.deleteEssay(uid, eid));
         result.setCode("200");
         return result;
     }
 
-    @GetMapping("/api/blog/addBlogLikes")
-    public Result addEssayLikes(String id){
+    @GetMapping("/api/blog/getPublishCategoriesName")
+    public Result getPublishCategoriesName(){
         Result result = new Result();
-        result.setResult(essayImpl.addEssayLikes(id));
+        result.setResult(essayImpl.getPublishCategoriesName());
         result.setCode("200");
         return result;
     }
 
-    @GetMapping("/api/blog/cancelBlogLikes")
-    public Result cancelEssayLikes(String id){
+    @GetMapping("/api/blog/addBlogLikes")
+    public Result addEssayLikes(@RequestBody Map<String,Object> map){
+        String uid = map.get("uid").toString();
+        String eid = map.get("eid").toString();
         Result result = new Result();
-        result.setResult(essayImpl.cancelEssayLikes(id));
+        result.setResult(essayImpl.addEssayLikes(eid, uid));
         result.setCode("200");
         return result;
     }
+
 
     @GetMapping("/api/blog/addBlogReaded")
-    public Result addEssayReaded(String id){
+    public Result addEssayReaded(@RequestBody Map<String,Object> map){
+        String uid = map.get("uid").toString();
+        String eid = map.get("eid").toString();
         Result result = new Result();
-        result.setResult(essayImpl.addEssayReaded(id));
+        result.setResult(essayImpl.addEssayReaded(uid, eid));
         result.setCode("200");
         return result;
     }

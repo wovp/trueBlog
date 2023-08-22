@@ -39,11 +39,13 @@ public interface EssayInterface {
     // 删除博客, 成功返回1， 失败返回0
     public int deleteEssay(String EssayID, String UserID);
 
+    List<String> getPublishCategoriesName();
+
     // 博客被点赞了，成功返回1， 失败返回0
-    public int addEssayLikes(String EssayID);
+    public int addEssayLikes(String EssayID, String UserID);
 
     // 博客被取消点赞了，成功返回1， 失败返回0
-    public int cancelEssayLikes(String EssayID);
+    public int cancelEssayLikes(String EssayID, String UserID);
 
     // 博客被收藏了，成功返回1， 失败返回0
     public int addEssayCollects(String EssayID);
@@ -52,7 +54,7 @@ public interface EssayInterface {
     public int cancelEssayCollects(String EssayID);
 
     // 博客被阅读了, 增加阅读量
-    public int addEssayReaded(String EssayID);
+    public int addEssayReaded(String UserID, String EssayID);
 
     // 返回发布博客的个人信息，用于博客详情页面使用
     User getEssayAuthor(String authorID);
