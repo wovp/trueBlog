@@ -15,6 +15,7 @@ import java.util.List;
 
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName: BlogController
@@ -58,5 +59,10 @@ public class UserController {
         result=userImpl.updateUserInfo(user);
         return result;
     }
-
+    @PostMapping("/api/blog/forgetpass")
+    public Result forgetpass(@RequestBody User user){
+        Result result = new Result();
+        result=userImpl.forgetpass(user);
+        return result;
+    }
 }

@@ -3,6 +3,7 @@ package com.ourblog.blog.service.impl;
 import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.pojo.User;
 import com.ourblog.blog.service.UserInterface;
+import javassist.bytecode.stackmap.BasicBlock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -10,6 +11,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+
 @Repository
 public  class UserImpl implements UserInterface {
     @Autowired(required = false)
@@ -85,6 +88,7 @@ public  class UserImpl implements UserInterface {
     }
 
     @Override
+    //根据用户名，获取该用户的粉丝数
     public Result getfans(String username) {
         Result result = new Result();
         Integer user = null;
@@ -109,6 +113,7 @@ public  class UserImpl implements UserInterface {
 
 
     @Override
+    //用户修改个人资料
     public Result updateUserInfo(User user) {
         Result result = new Result();
         try {
@@ -117,6 +122,8 @@ public  class UserImpl implements UserInterface {
                             user.getPhonenumber(),user.getAge(),user.getNickname(),user.getMailbox(),user.getGender(),
                             user.getUsername());
             //3.判断返回
+            jdbc.update("update essay set author=? where userid in (select userid from\n" +
+                    "    user where username=?)",user.getNickname(),user.getUsername());
             result.setCode("200");
             result.setResult("修改成功！");
             return result;
@@ -127,12 +134,34 @@ public  class UserImpl implements UserInterface {
             return result;
         }
     }
-/*
-    @Override
-    public String forgetpassword() {
-        return null;
-    }
+    public Result forgetpass(User user) {
+        Result result = new Result();
+        String userid = null;
+        try {
+            userid = jdbc.queryForObject("select userid from user where username = ? and phonenumber = ?",
+                    String.class,user.getUsername(),user.getPhonenumber());
+        }catch (DataAccessException e){
+        }
+        try {
+            if (userid == null){
+                result.setCode("202");
+                result.setResult("手机号与账号不匹配");
+                return result;
+            }else {
+                jdbc.update("update user set password=? where user.userid=?",user.getPassword(),userid);
+                result.setCode("200");
+                result.setResult("修改成功！");
+                return result;
+            }
 
+        }catch (DataAccessException e){
+
+        }
+        result.setCode("201");
+        result.setResult("修改失败");
+        return result;
+    }
+/*
     @Override
     public List<User> getlike(String userID) {
         return null;

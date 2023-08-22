@@ -2,9 +2,9 @@ server:
   port: 9090
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/ourblog?serverTimezone=GMT%2B8
+    url: jdbc:mysql://127.0.0.1:3306/ourblog?useSSL=false&serverTimezone=GMT
     username: root
-    password: root
+    password: 139898
     driver-class-name: com.mysql.cj.jdbc.Driver
   mvc:
     pathmatch:
