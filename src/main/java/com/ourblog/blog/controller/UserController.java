@@ -85,6 +85,17 @@ public class UserController {
         result=userImpl.getcollectblog(username);
         return result;
     }
+
+    @PostMapping("/api/user/login")
+    public Result login(@RequestBody Map<String,String> map) {
+        String username = map.get("username");
+        String password = map.get("password");
+        Result result = new Result();
+        result.setResult(userImpl.login(username, password));
+        return result;
+    }
+
+
     /*@PostMapping("/api/blog/unbook")
     public Result (@RequestParam ){
         Result result = new Result();

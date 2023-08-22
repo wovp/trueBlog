@@ -258,6 +258,17 @@ public  class UserImpl implements UserInterface {
         }
     }
 
+    public User login(String username, String password){
+        String sql = "select * from user where username = ? and password = ?";
+        try {
+            User user = jdbc.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), username, password);
+            return user;
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 
    /* @Override
     public List<Blog> likelog(String userID) {
