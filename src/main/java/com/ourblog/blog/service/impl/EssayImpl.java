@@ -83,7 +83,7 @@ public class EssayImpl implements EssayInterface {
     @Override
     public int publishEssay(String author_id, String author, String articleTitle, String articleContent,  String classfy, String publishDate, String articleSummary, String picurl) {
         // 先插入文章数据库
-        String sql_essay = "insert into essay (userid, author, title, content, briefintro, viewnumber, likenumber, colletnumber) value (?, ? ,? ,? ,? ,0, 0 ,0 )";
+        String sql_essay = "insert into essay (userid, author, title, content, briefintro, viewnumber, likenumber, colletnumber, isDelete) value (?, ? ,? ,? ,? ,0, 0 ,0, 0 )";
         KeyHolder keyHolder_essay = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
@@ -128,10 +128,17 @@ public class EssayImpl implements EssayInterface {
 
     @Override
     public int deleteEssay(String EssayID, String UserID) {
-
-
-
-        return 0;
+        // 删除 置1
+        String sql_de = "update essay set isDelete = 1 where essayid = ?";
+        String sql_qu = "select userid from essay where essayid = ?";
+        Map<String, Object> useridMap = jdbcTemplate.queryForMap(sql_qu, EssayID);
+        Object userid = useridMap.get("userid");
+        String userid_st = userid.toString();
+        int update = 0;
+        if (userid_st.equals(UserID)){
+            update = jdbcTemplate.update(sql_de, EssayID);
+        }
+        return update;
     }
 
     @Override

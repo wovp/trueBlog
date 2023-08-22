@@ -144,9 +144,9 @@ public class EssayController {
 
 
     @GetMapping("/api/blog/deleteBlog")
-    public Result deleteEssay(String id){
+    public Result deleteEssay(String uid, String eid){
         Result result = new Result();
-        result.setResult(essayImpl.deleteEssay(id, id));
+        result.setResult(essayImpl.deleteEssay(uid, eid));
         result.setCode("200");
         return result;
     }
