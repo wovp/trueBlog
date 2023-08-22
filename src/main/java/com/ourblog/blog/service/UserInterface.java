@@ -28,6 +28,12 @@ public interface UserInterface {
     Result updateUserInfo(User user);
     //忘记密码，提供密保问题答案？成功重置密码，否则显示错误.
     public String forgetpassword();
+
+    //查找用户发布过的文章
+    Result getpublishblog(String userid);
+
+    Result getpublishs(String userid);
+
     //显示赞过用户的人
     public List<User> getlike(String userID);
     //用户的粉丝

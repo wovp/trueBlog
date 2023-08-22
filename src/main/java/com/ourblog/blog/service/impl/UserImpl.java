@@ -1,9 +1,10 @@
 package com.ourblog.blog.service.impl;
 
+import com.ourblog.blog.pojo.Essay;
 import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.pojo.User;
+import com.ourblog.blog.pojo.UserPub;
 import com.ourblog.blog.service.UserInterface;
-import javassist.bytecode.stackmap.BasicBlock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -11,7 +12,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public  class UserImpl implements UserInterface {
@@ -20,6 +20,7 @@ public  class UserImpl implements UserInterface {
 
     @Override
     // 返回一个用户的对象，里面包含用户的个人信息展示,！！！密码处理问题待定
+    //TODO:置1为注销
     public Result getUserInfo(String username) {
         Result result = new Result();
         User user1 = null;
@@ -93,15 +94,28 @@ public  class UserImpl implements UserInterface {
         Result result = new Result();
         Integer user = null;
         int user3 = 0;
-        user = jdbc.queryForObject("select userid from user where username=?",
-                Integer.class, username);
         try {
-            user3 = jdbc.queryForObject("select count(care_user_id) value from user_to_user where userid = ?",
-                    Integer.class, user);
+            user = jdbc.queryForObject("select userid from user where username=?",
+                    Integer.class, username);
+        }catch (DataAccessException e){
             result.setCode("200");
-            result.setResult(user3);
-            System.out.println(user3);
+            result.setResult("该用户不存在");
             return result;
+        }
+        try {
+            try {
+                user3 = jdbc.queryForObject("select count(care_user_id) value from user_to_user where userid = ?",
+                        Integer.class, user);
+                result.setCode("200");
+                result.setResult(user3);
+                return result;
+            }catch (DataAccessException e){
+                result.setCode("200");
+                result.setResult(user3);
+                System.out.println(user3);
+                return result;
+            }
+
         } catch (Exception e) {
             result.setCode("201");
             result.setResult("查找失败");
@@ -134,6 +148,14 @@ public  class UserImpl implements UserInterface {
             return result;
         }
     }
+
+    @Override
+    public String forgetpassword() {
+        return null;
+    }
+
+
+    //忘记密码后通过电话号码和账号重置密码
     public Result forgetpass(User user) {
         Result result = new Result();
         String userid = null;
@@ -161,23 +183,47 @@ public  class UserImpl implements UserInterface {
         result.setResult("修改失败");
         return result;
     }
-/*
+@Override
+    //查找用户发布过的文章
+    public Result getpublishblog(String userid) {
+        Result result = new Result();
+
+        try {
+            List<UserPub> essay= jdbc.query("select essay.essayid, title, viewnumber, likenumber, colletnumber, briefintro,pictureurl,classify from essay\n" +
+                            "left join picture on essay.essayid=picture.essayid left join classfy_to_essay cte on essay.essayid = cte.essayid left join classify c on cte.classfy_id = c.id\n" +
+                            "where essay.userid = ? and essay.isDelete = 0 ",
+                    new BeanPropertyRowMapper<>(UserPub.class),userid);
+            result.setCode("200");
+            result.setResult(essay);
+            return result;
+        }catch (DataAccessException e){
+            result.setCode("201");
+            result.setResult("查找失败");
+            return result;
+        }
+    }
     @Override
-    public List<User> getlike(String userID) {
-        return null;
+    //获取收藏数量
+    public Result getpublishs(String userid) {
+        Result result = new Result();
+        Integer essay = null;
+        try {
+            essay = jdbc.queryForObject("select count(essayid) value from essay where userid = ?",
+                    Integer.class, userid);
+            result.setCode("200");
+            result.setResult(essay);
+            return result;
+        } catch (Exception e) {
+            result.setCode("201");
+            result.setResult("查找失败");
+            return result;
+        }
+
     }
 
-    @Override
-    public List<User> getfans(String userID) {
-        return null;
-    }
 
-    @Override
-    public List<Blog> publishblog(String userID) {
-        return null;
-    }
 
-    @Override
+   /* @Override
     public List<Blog> likelog(String userID) {
         return null;
     }*/
@@ -185,10 +231,7 @@ public  class UserImpl implements UserInterface {
 
 
 
-    @Override
-    public String forgetpassword() {
-        return null;
-    }
+
 
     @Override
     public List<User> getlike(String userID) {

@@ -65,4 +65,16 @@ public class UserController {
         result=userImpl.forgetpass(user);
         return result;
     }
+    @GetMapping("/api/blog/getpublishblog")
+    public Result getpublishblog(String userid) {
+        Result result = new Result();
+        result=userImpl.getpublishblog(userid);
+        return result;
+    }
+    @GetMapping("/api/blog/getpublishs")
+    public Result getpublishs(String userid) {
+        Result result = new Result();
+        result=userImpl.getpublishs(userid);
+        return result;
+    }
 }

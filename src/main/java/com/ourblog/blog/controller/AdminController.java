@@ -16,11 +16,10 @@ public class AdminController {
     private JdbcTemplate jdbc;
     @Autowired
     Adminlmpl adminlmpl;
-    @RequestMapping("/api/blog/deleteUser")
-    public Result updateUserInfo(@RequestParam("username") String username){
+    @PostMapping("/api/blog/deleteUser")
+    public Result deleteUser(@RequestBody User user){
         Result result = new Result();
-        System.out.println(username);
-        result=adminlmpl.deleteUser(username);
+        result=adminlmpl.deleteUser(user);
         return result;
     }
 }
