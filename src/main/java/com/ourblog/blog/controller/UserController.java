@@ -91,7 +91,16 @@ public class UserController {
         String username = map.get("username");
         String password = map.get("password");
         Result result = new Result();
+        result.setCode("200");
         result.setResult(userImpl.login(username, password));
+        return result;
+    }
+
+    @GetMapping("/api/user/followUser")
+    public Result followUser(String UserID, String followID) {
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(userImpl.followUser(UserID, followID));
         return result;
     }
 

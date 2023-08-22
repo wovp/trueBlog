@@ -270,6 +270,27 @@ public  class UserImpl implements UserInterface {
 
     }
 
+    public int followUser(String UserID, String followID){
+        String sql = "select YNcare from user_to_user where userid = ? and care_user_id = ?";
+        String sql_in = "insert into user_to_user (userid, care_user_id, YNcare) VALUE (?, ?, 1)";
+        String sql_do = "update user_to_user set YNcare = 1 where userid = ? and care_user_id = ?";
+        String sql_un = "update user_to_user set YNcare = 0 where userid = ? and care_user_id = ?";
+        int update = 0;
+        try {
+            String s = jdbc.queryForObject(sql, String.class, UserID, followID);
+            if("0".equals(s)){
+                // 说明有， 现在要关注
+                update = jdbc.update(sql_do, UserID, followID);
+            }else{
+                jdbc.update(sql_un,UserID, followID);
+            }
+        } catch (DataAccessException e) {
+            jdbc.update(sql_in, UserID, followID);
+            update = 1;
+        }
+        return update;
+    }
+
    /* @Override
     public List<Blog> likelog(String userID) {
         return null;
