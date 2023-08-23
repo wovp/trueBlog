@@ -1,8 +1,7 @@
 package com.ourblog.blog.service;
 
-import com.ourblog.blog.pojo.Comments;
-
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName: CommentsInterface
@@ -23,7 +22,7 @@ public interface CommentsInterface {
     int deleteComment(int id);
 
     // 展示评论列表, 把所有符合aid 的评论都查出来
-    List<Comments> showCommentsList(int aid);
+    List<Map<String, Object>> showCommentsList(String aid);
 
     // 点赞评论
     int likeComment(int aid);
