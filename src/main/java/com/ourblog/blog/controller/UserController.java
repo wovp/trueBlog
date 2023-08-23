@@ -1,4 +1,5 @@
 package com.ourblog.blog.controller;
+import com.alibaba.fastjson.JSONObject;
 import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.pojo.User;
 import com.ourblog.blog.service.impl.UserImpl;
@@ -85,30 +86,25 @@ public class UserController {
         result=userImpl.getcollectblog(username);
         return result;
     }
-
-    @PostMapping("/api/user/login")
-    public Result login(@RequestBody Map<String,String> map) {
-        String username = map.get("username");
-        String password = map.get("password");
+    @GetMapping("/api/blog/getcollects")
+    public Result getcollects(String username) {
         Result result = new Result();
-        result.setCode("200");
-        result.setResult(userImpl.login(username, password));
+        result=userImpl.getcollects(username);
         return result;
     }
 
-    @GetMapping("/api/user/followUser")
-    public Result followUser(String UserID, String followID) {
+    @PostMapping("/api/blog/oneunbook")
+    public Result oneunbook(@RequestBody JSONObject object){
         Result result = new Result();
-        result.setCode("200");
-        result.setResult(userImpl.followUser(UserID, followID));
+        result=userImpl.oneunbook(object.getString("username"));
         return result;
     }
 
-    @GetMapping("/api/user/allCountUser")
-    public Result allCountUser() {
+
+    @PostMapping("/api/blog/unbook")
+    public Result unbook(@RequestBody JSONObject object){
         Result result = new Result();
-        result.setCode("200");
-        result.setResult(userImpl.getAllCountUser());
+        result=userImpl.unbook(object.getString("username"),object.getString("essayid"));
         return result;
     }
 
@@ -123,15 +119,25 @@ public class UserController {
 
     /*@PostMapping("/api/blog/unbook")
     public Result (@RequestParam ){
+    @GetMapping("/api/blog/getcares")
+    public Result getcares(String username) {
         Result result = new Result();
-        result=userImpl.forgetpass(user);
+        System.out.println(username);
+        result=userImpl.getcares(username);
         return result;
     }
-    @PostMapping("/api/blog/oneunbook")
-    public Result oneunbook(@RequestBody(required = false)Map<String,Object> map, Integer userid){
+    @GetMapping("/api/blog/getfanInfo")
+    public Result getfanInfo(String username) {
         Result result = new Result();
-        result=userImpl.oneunbook(map);
+        System.out.println(username);
+        result=userImpl.getfanInfo(username);
         return result;
-    }*/
-
+    }
+    @GetMapping("/api/blog/getcareInfo")
+    public Result getcareInfo(String username) {
+        Result result = new Result();
+        System.out.println(username);
+        result=userImpl.getcareInfo(username);
+        return result;
+    }
 }

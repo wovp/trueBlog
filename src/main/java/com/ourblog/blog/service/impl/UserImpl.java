@@ -3,6 +3,7 @@ package com.ourblog.blog.service.impl;
 import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.pojo.User;
 import com.ourblog.blog.pojo.UserPub;
+import com.ourblog.blog.pojo.UserShow;
 import com.ourblog.blog.service.UserInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -91,8 +92,8 @@ public  class UserImpl implements UserInterface {
     }
 
     @Override
-    //根据用户名，获取该用户的粉丝数
-    public Result getfans(String username) {
+    //根据用户名，获取该用户的关注的人总数
+    public Result getcares(String username) {
         Result result = new Result();
         Integer user = null;
         int user3 = 0;
@@ -106,7 +107,7 @@ public  class UserImpl implements UserInterface {
         }
         try {
             try {
-                user3 = jdbc.queryForObject("select count(care_user_id) value from user_to_user where userid = ?",
+                user3 = jdbc.queryForObject("select count(care_user_id) value from user_to_user where userid = ? and YNcare = 1",
                         Integer.class, user);
                 result.setCode("200");
                 result.setResult(user3);
@@ -205,7 +206,7 @@ public  class UserImpl implements UserInterface {
         }
     }
     @Override
-    //获取收藏数量
+    //获取发布文章数量
     public Result getpublishs(String userid) {
         Result result = new Result();
         Integer essay = null;
@@ -229,7 +230,7 @@ public  class UserImpl implements UserInterface {
     }
 
     @Override
-    //查找用户发布过的文章
+    //查找用户收藏了的文章
     public Result getcollectblog(String username) {
         Result result = new Result();
 
@@ -254,6 +255,103 @@ public  class UserImpl implements UserInterface {
                 return result;
             }
         }catch (DataAccessException e){
+            result.setCode("201");
+            result.setResult("查找失败");
+            return result;
+        }
+    }
+
+    @Override
+    public Result unbook(String username) {
+        return null;
+    }
+
+    @Override
+    //获取收藏数量
+    public Result getcollects(String username) {
+        Result result = new Result();
+        Integer essay = null;
+        try {
+                 System.out.println(username);
+                 essay = jdbc.queryForObject("select count(eassy_id) value from user left join user_to_eassy_likes_collect_read co on user.userid = co.user_id\n" +
+                                 "left join essay on eassy_id = essay.essayid where YNcollect = 1 and user.username = ? and isDelete = 0",
+                         Integer.class, username);
+                 result.setCode("200");
+                 result.setResult(essay);
+                 return result;
+        } catch (Exception e) {
+            result.setCode("201");
+            result.setResult("查找失败");
+            return result;
+        }
+
+    }
+
+    @Override
+    public Result unbook(String username, String essayid) {
+        Result result = new Result();
+        System.out.println(username);
+        System.out.println(essayid);
+        try {
+            jdbc.update("update user_to_eassy_likes_collect_read co set YNcollect = 0 where\n" +
+                    "co.eassy_id = ? and user_id in(select userid from user where user.username= ?)",
+                    essayid,username);
+            result.setCode("200");
+            result.setResult("取消成功");
+            return result;
+        }catch (DataAccessException e){
+            result.setCode("201");
+            result.setResult("取消失败");
+            return result;
+        }
+    }
+
+    @Override
+    //取消收藏
+    public Result oneunbook(String username){
+        Result result = new Result();
+        System.out.println(username);
+        try {
+            jdbc.update("update user_to_eassy_likes_collect_read set YNcollect = 0 where user_id in " +
+                    "(select userid from user where user.username= ?)",username);
+            result.setCode("200");
+            result.setResult("一键取消成功");
+            return result;
+        }catch (Exception e){
+            result.setCode("201");
+            result.setResult("一键取消失败");
+            return result;
+        }
+    }
+    @Override
+    //根据用户名，获取该用户的关注数
+    public Result getfans(String username) {
+        Result result = new Result();
+        Integer user = null;
+        int user1 = 0;
+        try {
+            user = jdbc.queryForObject("select userid from user where username=?",
+                    Integer.class, username);
+        } catch (DataAccessException e) {
+            result.setCode("200");
+            result.setResult("该用户不存在");
+            return result;
+        }
+        try {
+            try {
+                user1 = jdbc.queryForObject("select count(userid) value from user_to_user where care_user_id = ? and YNcare = 1 ",
+                        Integer.class, user);
+                result.setCode("200");
+                result.setResult(user1);
+                return result;
+            } catch (DataAccessException e) {
+                result.setCode("200");
+                result.setResult(user1);
+                System.out.println(user1);
+                return result;
+            }
+
+        } catch (Exception e) {
             result.setCode("201");
             result.setResult("查找失败");
             return result;
@@ -293,7 +391,53 @@ public  class UserImpl implements UserInterface {
         return update;
     }
 
-   /* @Override
+    @Override
+    public Result getfanInfo(String username){
+        Result result = new Result();
+        try{
+            System.out.println(username);
+            List<UserShow> user= jdbc.query("select avatar,nickname from user where YNlogout = 0 and userid IN (select user_to_user.userid  from user_to_user where care_user_id in\n" +
+                    "     (select userid from user where username = ?))",new BeanPropertyRowMapper<>(UserShow.class),username);
+            if (CollectionUtils.isEmpty(user)){
+                result.setResult("您还没有粉丝哦~去发布更多文章吧！");
+                result.setCode("202");
+                return result;
+            }
+            result.setResult(user);
+            result.setCode("200");
+            return result;
+        }catch (DataAccessException e){
+            e.printStackTrace();
+            result.setResult("查询失败");
+            result.setCode("201");
+            return result;
+        }
+    }
+    public Result getcareInfo(String username){
+        Result result = new Result();
+        try{
+            System.out.println(username);
+            List<UserShow> user= jdbc.query("select avatar,nickname from user where YNlogout = 0 and userid IN (select care_user_id  from user_to_user where user_to_user.userid in\n" +
+                    " (select userid from user where username = ?))",new BeanPropertyRowMapper<>(UserShow.class),username);
+            if (CollectionUtils.isEmpty(user)){
+                result.setResult("您还没有关注哦~去发现宝藏用户吧！");
+                result.setCode("202");
+                return result;
+            }
+            result.setResult(user);
+            result.setCode("200");
+            return result;
+        }catch (DataAccessException e){
+            e.printStackTrace();
+            result.setResult("查询失败");
+            result.setCode("201");
+            return result;
+        }
+    }
+
+/*
+
+    @Override
     public List<Blog> likelog(String userID) {
         return null;
     }*/

@@ -4,7 +4,6 @@ import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.pojo.User;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * ClassName: UserInterface
@@ -26,6 +25,9 @@ public interface UserInterface {
     // 注册用户，返回 1 注册成功， 0 为失败
     public Result registerUser(User user);
 
+    //根据用户名，获取该用户的关注的人总数
+    Result getcares(String username);
+
     Result updateUserInfo(User user);
     //忘记密码，提供密保问题答案？成功重置密码，否则显示错误.
     public String forgetpassword();
@@ -43,8 +45,17 @@ public interface UserInterface {
     //查找用户发布过的文章
     Result getcollectblog(String userid);
 
-    // 返回用户排行榜，是通过发布博客数量排序
-    List<Map<String, Object>> getUserListByPublishBlog();
+    //获取收藏数量
+    Result getcollects(String username);
+
+    Result unbook(String username);
+
+    Result unbook(String username, String essayid);
+
+    //取消收藏
+    Result oneunbook(String username);
+
+    Result getfanInfo(String username);
     //用户发表的博文
     //public List<Blog> publishblog(String userID);
     //用户点赞过的文章,点赞是否需要单独建表？
