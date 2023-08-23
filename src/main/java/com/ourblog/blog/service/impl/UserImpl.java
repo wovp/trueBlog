@@ -308,14 +308,8 @@ public  class UserImpl implements UserInterface {
     // 返回用户排行榜，是通过发布博客数量排序
     @Override
     public List<Map<String, Object>> getUserListByPublishBlog() {
-        String sql = "select * from (select userid, count(*) count from essay group by userid) se order by se.count DESC;";
+        String sql = "select se.userid, nickname, se.count from (select userid, count(*) count from essay group by userid) se, user where user.userid = se.userid order by se.count DESC";
         List<Map<String, Object>> maps = jdbc.queryForList(sql);
-        List<Map<String, Object>> show = new ArrayList<Map<String, Object>>();
-        String sql_username = "select nickname from user where userid = ?";
-        for (Map<String, Object> map: maps){
-            String userid = map.get("userid").toString();
-            // 写到这里
-        }
         return maps;
     }
 

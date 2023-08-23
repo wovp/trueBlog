@@ -112,6 +112,14 @@ public class UserController {
         return result;
     }
 
+    @GetMapping("/api/user/getUserListByPublishBlog")
+    public Result getUserListByPublishBlog() {
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(userImpl.getUserListByPublishBlog());
+        return result;
+    }
+
 
     /*@PostMapping("/api/blog/unbook")
     public Result (@RequestParam ){
