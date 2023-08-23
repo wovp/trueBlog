@@ -1,5 +1,6 @@
 package com.ourblog.blog.controller;
 
+import com.ourblog.blog.pojo.Essay;
 import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.pojo.User;
 import com.ourblog.blog.service.impl.Adminlmpl;
@@ -20,6 +21,12 @@ public class AdminController {
     public Result deleteUser(@RequestBody User user){
         Result result = new Result();
         result=adminlmpl.deleteUser(user);
+        return result;
+    }
+    @PostMapping("/api/blog/deleteessay")
+    public Result deleteessay(@RequestBody Essay essay){
+        Result result = new Result();
+        result=adminlmpl.deleteUser(essay);
         return result;
     }
 }

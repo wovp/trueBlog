@@ -1,4 +1,5 @@
 package com.ourblog.blog.controller;
+import com.alibaba.fastjson.JSONObject;
 import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.pojo.User;
 import com.ourblog.blog.service.impl.UserImpl;
@@ -85,17 +86,46 @@ public class UserController {
         result=userImpl.getcollectblog(username);
         return result;
     }
-    /*@PostMapping("/api/blog/unbook")
-    public Result (@RequestParam ){
+    @GetMapping("/api/blog/getcollects")
+    public Result getcollects(String username) {
         Result result = new Result();
-        result=userImpl.forgetpass(user);
+        result=userImpl.getcollects(username);
         return result;
     }
-    @PostMapping("/api/blog/oneunbook")
-    public Result oneunbook(@RequestBody(required = false)Map<String,Object> map, Integer userid){
-        Result result = new Result();
-        result=userImpl.oneunbook(map);
-        return result;
-    }*/
 
+    @PostMapping("/api/blog/oneunbook")
+    public Result oneunbook(@RequestBody JSONObject object){
+        Result result = new Result();
+        result=userImpl.oneunbook(object.getString("username"));
+        return result;
+    }
+
+
+    @PostMapping("/api/blog/unbook")
+    public Result unbook(@RequestBody JSONObject object){
+        Result result = new Result();
+        result=userImpl.unbook(object.getString("username"),object.getString("essayid"));
+        return result;
+    }
+    @GetMapping("/api/blog/getcares")
+    public Result getcares(String username) {
+        Result result = new Result();
+        System.out.println(username);
+        result=userImpl.getcares(username);
+        return result;
+    }
+    @GetMapping("/api/blog/getfanInfo")
+    public Result getfanInfo(String username) {
+        Result result = new Result();
+        System.out.println(username);
+        result=userImpl.getfanInfo(username);
+        return result;
+    }
+    @GetMapping("/api/blog/getcareInfo")
+    public Result getcareInfo(String username) {
+        Result result = new Result();
+        System.out.println(username);
+        result=userImpl.getcareInfo(username);
+        return result;
+    }
 }
