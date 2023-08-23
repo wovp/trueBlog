@@ -29,6 +29,8 @@ public interface EssayInterface {
     public List<Map<String, Object>> getEssayDetail(String EssayID);
 
 
+    Integer getEssayDetailReadNum(String EssayID);
+
     // 根据点赞量排序获取前五个点赞量最高的博客
     public List<Map<String, Object>> getEssayListByLikes();
 
@@ -60,6 +62,9 @@ public interface EssayInterface {
     User getEssayAuthor(String authorID);
 
 
+    int getEssayAllCount();
 
+    int getAllEssayAllRead();
 
+    List<Map<String, Object>> getEssayCateAllCount();
 }

@@ -4,6 +4,7 @@ import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.pojo.User;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName: UserInterface
@@ -41,6 +42,9 @@ public interface UserInterface {
 
     //查找用户发布过的文章
     Result getcollectblog(String userid);
+
+    // 返回用户排行榜，是通过发布博客数量排序
+    List<Map<String, Object>> getUserListByPublishBlog();
     //用户发表的博文
     //public List<Blog> publishblog(String userID);
     //用户点赞过的文章,点赞是否需要单独建表？

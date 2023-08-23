@@ -44,8 +44,7 @@ public class EssayImpl implements EssayInterface {
             System.out.println("id = ");
             System.out.println(id);
             String id1 = id.toString();
-            String sql01 = "select essay.essayid, title, likenumber, colletnumber, briefintro, author, pictureurl from classfy_to_essay ,essay, picture where classfy_to_essay.essayid = essay.essayid and essay.essayid = picture.essayid and classfy_id = ?";
-            List<Map<String, Object>> essay_list = jdbcTemplate.queryForList(sql01, id1);
+            String sql01 = "select essay.essayid, title, likenumber, colletnumber, briefintro, author, pictureurl, essay.data from classfy_to_essay ,essay, picture where classfy_to_essay.essayid = essay.essayid and essay.essayid = picture.essayid and classfy_id = ? and essay.data < NOW() and  essay.isDelete = 0";       List<Map<String, Object>> essay_list = jdbcTemplate.queryForList(sql01, id1);
             map.put("title", essay_list);
         }
 
@@ -62,7 +61,7 @@ public class EssayImpl implements EssayInterface {
 
     @Override
     public List<Map<String, Object>> getEssayList() {
-        String sql = "select essay.essayid ,classify, title, viewnumber, author, likenumber,colletnumber, briefintro, pictureurl from classify, classfy_to_essay, essay, picture where classify.id = classfy_to_essay.classfy_id and classfy_to_essay.essayid = essay.essayid and picture.essayid = essay.essayid and essay.isDelete = 0";
+        String sql = "select essay.essayid ,classify, title, viewnumber, author, likenumber,colletnumber, briefintro, pictureurl from classify, classfy_to_essay, essay, picture where classify.id = classfy_to_essay.classfy_id and classfy_to_essay.essayid = essay.essayid and picture.essayid = essay.essayid and essay.isDelete = 0 and essay.data < NOW()";
         List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql);
         return EssayList;
     }
@@ -72,6 +71,13 @@ public class EssayImpl implements EssayInterface {
         String sql = "select essay.essayid, author, content, likenumber, colletnumber, pictureurl from essay, picture where essay.essayid = ? and essay.essayid  = picture.essayid";
         List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql, EssayID);
         return EssayList;
+    }
+
+    @Override
+    public Integer getEssayDetailReadNum(String EssayID) {
+        String sql = "select count(*) from user_to_eassy_likes_collect_read where eassy_id = 1";
+        Integer integer = jdbcTemplate.queryForObject(sql, Integer.class);
+        return integer;
     }
 
     @Override
@@ -85,7 +91,7 @@ public class EssayImpl implements EssayInterface {
     @Override
     public int publishEssay(String author_id, String author, String articleTitle, String articleContent,  String classfy, String publishDate, String articleSummary, String picurl) {
         // 先插入文章数据库
-        String sql_essay = "insert into essay (userid, author, title, content, briefintro, viewnumber, likenumber, colletnumber, isDelete) value (?, ? ,? ,? ,? ,0, 0 ,0, 0 )";
+        String sql_essay = "insert into essay (userid, author, title, content, briefintro, viewnumber, likenumber, colletnumber, isDelete, data) value (?, ? ,? ,? ,? ,0, 0 ,0, 0, NOW())";
         KeyHolder keyHolder_essay = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
@@ -136,8 +142,11 @@ public class EssayImpl implements EssayInterface {
         Map<String, Object> useridMap = jdbcTemplate.queryForMap(sql_qu, EssayID);
         Object userid = useridMap.get("userid");
         String userid_st = userid.toString();
+        System.out.println(userid_st);
+        System.out.println(UserID);
         int update = 0;
         if (userid_st.equals(UserID)){
+            System.out.println("进入删除");
             update = jdbcTemplate.update(sql_de, EssayID);
         }
         return update;
@@ -227,6 +236,55 @@ public class EssayImpl implements EssayInterface {
     @Override
     public User getEssayAuthor(String authorID) {
         return null;
+    }
+
+    public int addEssayCollect(String EssayID, String UserID) {
+        String sql_qu = "select YNcollect from user_to_eassy_likes_collect_read where user_id = ? and eassy_id = ?";
+        int update = 0;
+        try {
+            String s = jdbcTemplate.queryForObject(sql_qu, String.class, UserID, EssayID);
+
+            // 说明查到了，有数据
+            String sql_up = "update user_to_eassy_likes_collect_read set YNcollect = 1 where eassy_id = ? and user_id = ?";
+
+            String sql_do = "update user_to_eassy_likes_collect_read set YNcollect = 0 where eassy_id = ? and user_id = ?";
+            System.out.println(s);
+            if("0".equals(s)){
+                System.out.println("进入增加");
+                update = jdbcTemplate.update(sql_up, EssayID, UserID);
+            }
+            else{
+                update = jdbcTemplate.update(sql_do, EssayID, UserID);
+                update = 0;
+            }
+        } catch (DataAccessException e) {
+            return 0;
+        }
+        return update;
+    }
+
+    @Override
+    public int getEssayAllCount() {
+        String sql = "select count(*) from essay";
+        Integer integer = jdbcTemplate.queryForObject(sql, Integer.class);
+
+        return integer;
+    }
+
+
+    @Override
+    public int getAllEssayAllRead() {
+        String sql = "select sum(read_num) from user_to_eassy_likes_collect_read";
+        Integer integer = jdbcTemplate.queryForObject(sql, Integer.class);
+        return integer;
+    }
+
+    // 根据类别统计文章数量
+    @Override
+    public List<Map<String, Object>> getEssayCateAllCount() {
+        String sql = "select classify, count(*) count from essay, classfy_to_essay, classify where essay.essayid = classfy_to_essay.essayid and classify.id = classfy_to_essay.classfy_id group by classfy_to_essay.classfy_id";
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
+        return maps;
     }
 
 

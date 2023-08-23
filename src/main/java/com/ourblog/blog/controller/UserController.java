@@ -104,6 +104,14 @@ public class UserController {
         return result;
     }
 
+    @GetMapping("/api/user/allCountUser")
+    public Result allCountUser() {
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(userImpl.getAllCountUser());
+        return result;
+    }
+
 
     /*@PostMapping("/api/blog/unbook")
     public Result (@RequestParam ){

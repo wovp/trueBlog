@@ -72,6 +72,14 @@ public class EssayController {
         return result;
     }
 
+    @GetMapping("/api/blog/getBlogDetailRead")
+    public Result getEssayDetailRead(String id){
+        Result result = new Result();
+        result.setResult(essayImpl.getEssayDetailReadNum(id));
+        result.setCode("200");
+        return result;
+    }
+
 
     @ApiOperation(value = "添加博客",
             protocols = "http",
@@ -142,13 +150,21 @@ public class EssayController {
         return result;
     }
 
+    @GetMapping("/api/blog/getAllEssayAllRead")
+    public Result getAllEssayAllRead(){
+        Result result = new Result();
+        result.setResult(essayImpl.getAllEssayAllRead());
+        result.setCode("200");
+        return result;
+    }
 
-    @GetMapping("/api/blog/deleteBlog")
+
+    @PostMapping("/api/blog/deleteBlog")
     public Result deleteEssay(@RequestBody Map<String,Object> map){
         String uid = map.get("uid").toString();
         String eid = map.get("eid").toString();
         Result result = new Result();
-        result.setResult(essayImpl.deleteEssay(uid, eid));
+        result.setResult(essayImpl.deleteEssay(eid, uid));
         result.setCode("200");
         return result;
     }
@@ -162,9 +178,7 @@ public class EssayController {
     }
 
     @GetMapping("/api/blog/addBlogLikes")
-    public Result addEssayLikes(@RequestBody Map<String,Object> map){
-        String uid = map.get("uid").toString();
-        String eid = map.get("eid").toString();
+    public Result addEssayLikes(String uid, String eid){
         Result result = new Result();
         result.setResult(essayImpl.addEssayLikes(eid, uid));
         result.setCode("200");
@@ -173,12 +187,37 @@ public class EssayController {
 
 
     @GetMapping("/api/blog/addBlogReaded")
-    public Result addEssayReaded(@RequestBody Map<String,Object> map){
-        String uid = map.get("uid").toString();
-        String eid = map.get("eid").toString();
+    public Result addEssayReaded(String uid, String eid){
         Result result = new Result();
         result.setResult(essayImpl.addEssayReaded(uid, eid));
         result.setCode("200");
+        return result;
+    }
+
+    @GetMapping("/api/blog/addBlogCollect")
+    public Result addEssayCollect(String uid, String eid){
+        Result result = new Result();
+        result.setResult(essayImpl.addEssayCollect(uid, eid));
+        result.setCode("200");
+        return result;
+    }
+
+
+
+    @GetMapping("/api/blog/getEssayAllCount")
+    public Result getEssayAllCount(){
+        int essayAllCount = essayImpl.getEssayAllCount();
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(essayAllCount);
+        return result;
+    }
+
+    @GetMapping("/api/blog/getEssayCateAllCount")
+    public Result getEssayCateAllCount(){
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(essayImpl.getEssayCateAllCount());
         return result;
     }
 
@@ -199,6 +238,8 @@ public class EssayController {
         result.setCode("200");
         return result;
     }
+
+
 
 
 }
