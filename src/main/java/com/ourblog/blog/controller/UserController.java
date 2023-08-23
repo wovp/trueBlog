@@ -107,6 +107,18 @@ public class UserController {
         result=userImpl.unbook(object.getString("username"),object.getString("essayid"));
         return result;
     }
+
+    @GetMapping("/api/user/getUserListByPublishBlog")
+    public Result getUserListByPublishBlog() {
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(userImpl.getUserListByPublishBlog());
+        return result;
+    }
+
+
+    /*@PostMapping("/api/blog/unbook")
+    public Result (@RequestParam ){
     @GetMapping("/api/blog/getcares")
     public Result getcares(String username) {
         Result result = new Result();
