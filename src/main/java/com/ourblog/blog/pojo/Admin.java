@@ -1,6 +1,8 @@
 package com.ourblog.blog.pojo;
 
+import lombok.Data;
 
+@Data
 public class Admin {
 
   private long id;
