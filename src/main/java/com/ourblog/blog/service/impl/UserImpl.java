@@ -260,6 +260,12 @@ public  class UserImpl implements UserInterface {
             return result;
         }
     }
+
+    @Override
+    public Result unbook(String username) {
+        return null;
+    }
+
     @Override
     //获取收藏数量
     public Result getcollects(String username) {
@@ -279,11 +285,6 @@ public  class UserImpl implements UserInterface {
             return result;
         }
 
-    }
-
-    @Override
-    public Result unbook(String username) {
-        return null;
     }
 
     @Override
@@ -331,7 +332,7 @@ public  class UserImpl implements UserInterface {
         try {
             user = jdbc.queryForObject("select userid from user where username=?",
                     Integer.class, username);
-        }catch (DataAccessException e){
+        } catch (DataAccessException e) {
             result.setCode("200");
             result.setResult("该用户不存在");
             return result;
@@ -343,7 +344,7 @@ public  class UserImpl implements UserInterface {
                 result.setCode("200");
                 result.setResult(user1);
                 return result;
-            }catch (DataAccessException e){
+            } catch (DataAccessException e) {
                 result.setCode("200");
                 result.setResult(user1);
                 System.out.println(user1);
@@ -355,6 +356,7 @@ public  class UserImpl implements UserInterface {
             result.setResult("查找失败");
             return result;
         }
+    }
 
     public User login(String username, String password){
         String sql = "select * from user where username = ? and password = ?";
@@ -389,7 +391,6 @@ public  class UserImpl implements UserInterface {
         return update;
     }
 
-    }
     @Override
     public Result getfanInfo(String username){
         Result result = new Result();
