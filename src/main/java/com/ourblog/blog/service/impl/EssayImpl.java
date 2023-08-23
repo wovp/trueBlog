@@ -68,7 +68,7 @@ public class EssayImpl implements EssayInterface {
 
     @Override
     public List<Map<String, Object>> getEssayDetail(String EssayID) {
-        String sql = "select essay.essayid, author, content, likenumber, colletnumber, pictureurl from essay, picture where essay.essayid = ? and essay.essayid  = picture.essayid";
+        String sql = "select essay.essayid, author, content, likenumber, colletnumber, pictureurl from essay left join picture on essay.essayid  = picture.essayid where essay.essayid = ?";
         List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql, EssayID);
         return EssayList;
     }
