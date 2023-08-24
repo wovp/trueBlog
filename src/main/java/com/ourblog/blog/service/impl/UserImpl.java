@@ -1,9 +1,6 @@
 package com.ourblog.blog.service.impl;
 
-import com.ourblog.blog.pojo.Result;
-import com.ourblog.blog.pojo.User;
-import com.ourblog.blog.pojo.UserPub;
-import com.ourblog.blog.pojo.UserShow;
+import com.ourblog.blog.pojo.*;
 import com.ourblog.blog.service.UserInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -28,28 +25,19 @@ public  class UserImpl implements UserInterface {
         Result result = new Result();
         User user1 = null;
         try {
-            System.out.println("2222222222222222222：" + username);
-            user1 = jdbc.queryForObject("select userid from user where username=?", new BeanPropertyRowMapper<>(User.class), username);
-            System.out.println("11111111111111111111111");
+            user1 = jdbc.queryForObject("select userid from user where username=?",
+                    new BeanPropertyRowMapper<>(User.class), username);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(user1);
+            result.setCode("202");
+            result.setResult("用户名错误");
+            return result;
         }
-        System.out.println("3333333333333333");
-        System.out.println(user1);
-        System.out.println("44444444444444444444");
         try {
-            if (user1 == null) {
-                result.setCode("200");
-                result.setResult("用户id错误");
-            } else {
                 result.setCode("200");
                 result.setResult(jdbc.query("select * from user where userid=?",
                         new BeanPropertyRowMapper<>(User.class), user1.getUserid()));
-            }
-            return result;
+                return result;
         } catch (DataAccessException e) {
-            e.printStackTrace();
             result.setCode("201");
             result.setResult("查询失败");
             return result;
@@ -101,7 +89,7 @@ public  class UserImpl implements UserInterface {
             user = jdbc.queryForObject("select userid from user where username=?",
                     Integer.class, username);
         }catch (DataAccessException e){
-            result.setCode("200");
+            result.setCode("202");
             result.setResult("该用户不存在");
             return result;
         }
@@ -192,7 +180,7 @@ public  class UserImpl implements UserInterface {
         Result result = new Result();
 
         try {
-            List<UserPub> essay= jdbc.query("select essay.essayid, title, viewnumber, likenumber, colletnumber, briefintro,pictureurl,classify from essay\n" +
+            List<UserPub> essay= jdbc.query("select essay.essayid, title,author, viewnumber, likenumber, colletnumber, briefintro,pictureurl,classify from essay\n" +
                             "left join picture on essay.essayid=picture.essayid left join classfy_to_essay cte on essay.essayid = cte.essayid left join classify c on cte.classfy_id = c.id\n" +
                             "where essay.userid = ? and essay.isDelete = 0 ",
                     new BeanPropertyRowMapper<>(UserPub.class),userid);
@@ -235,13 +223,13 @@ public  class UserImpl implements UserInterface {
         Result result = new Result();
 
         try {
-            try {
-                List<UserPub> essay= jdbc.query("select essay.essayid, title, viewnumber, likenumber, colletnumber, briefintro,pictureurl,classify from user left join\n" +
+                List<UserPub> essay= jdbc.query("select essay.essayid, title,author, viewnumber, likenumber, colletnumber, briefintro,pictureurl,classify from user left join\n" +
                                 "user_to_eassy_likes_collect_read co on user.userid = co.user_id left join essay on eassy_id= essayid\n" +
                                 "left join picture on essay.essayid=picture.essayid left join classfy_to_essay cte on essay.essayid = cte.essayid\n" +
                                 "left join classify c on cte.classfy_id = c.id where user.username = ? and essay.isDelete = 0 and YNcollect = 1 ",
                         new BeanPropertyRowMapper<>(UserPub.class),username);
-                if(CollectionUtils.isEmpty(essay)){
+            System.out.println(essay);
+            if(CollectionUtils.isEmpty(essay)){
                     result.setCode("202");
                     result.setResult("您还没发过文章哦！");
                     return result;
@@ -249,11 +237,8 @@ public  class UserImpl implements UserInterface {
                 result.setCode("200");
                 result.setResult(essay);
                 return result;
-            }catch (DataAccessException e){
-                result.setCode("202");
-                result.setResult("您还没发过文章哦！");
-                return result;
-            }
+
+
         }catch (DataAccessException e){
             result.setCode("201");
             result.setResult("查找失败");
@@ -396,8 +381,8 @@ public  class UserImpl implements UserInterface {
         Result result = new Result();
         try{
             System.out.println(username);
-            List<UserShow> user= jdbc.query("select avatar,nickname from user where YNlogout = 0 and userid IN (select user_to_user.userid  from user_to_user where care_user_id in\n" +
-                    "     (select userid from user where username = ?))",new BeanPropertyRowMapper<>(UserShow.class),username);
+            List<UserShow> user= jdbc.query("select avatar,nickname,userid,age from user where YNlogout = 0 and userid IN (select user_to_user.userid  from user_to_user where care_user_id in\n" +
+                    "(select userid from user where username = ?))",new BeanPropertyRowMapper<>(UserShow.class),username);
             if (CollectionUtils.isEmpty(user)){
                 result.setResult("您还没有粉丝哦~去发布更多文章吧！");
                 result.setCode("202");
@@ -417,7 +402,7 @@ public  class UserImpl implements UserInterface {
         Result result = new Result();
         try{
             System.out.println(username);
-            List<UserShow> user= jdbc.query("select avatar,nickname from user where YNlogout = 0 and userid IN (select care_user_id  from user_to_user where user_to_user.userid in\n" +
+            List<UserShow> user= jdbc.query("select avatar,nickname,userid,age from user where YNlogout = 0 and userid IN (select care_user_id  from user_to_user where user_to_user.userid in\n" +
                     " (select userid from user where username = ?))",new BeanPropertyRowMapper<>(UserShow.class),username);
             if (CollectionUtils.isEmpty(user)){
                 result.setResult("您还没有关注哦~去发现宝藏用户吧！");
@@ -450,12 +435,42 @@ public  class UserImpl implements UserInterface {
     }
 
     // 返回用户排行榜，是通过发布博客数量排序
-    @Override
+
     public List<Map<String, Object>> getUserListByPublishBlog() {
         String sql = "select se.userid, nickname, se.count from (select userid, count(*) count from essay group by userid) se, user where user.userid = se.userid order by se.count DESC";
         List<Map<String, Object>> maps = jdbc.queryForList(sql);
         return maps;
     }
+    //查看粉丝个人主页
+    public Result faninfopage(String userid) {
+        Result result = new Result();
+        System.out.println(userid);
+        try {
+            List<Userpage> fan= jdbc.query("select essay.essayid,user.userid,age, avatar,title,nickname,viewnumber, likenumber, " +
+                            "colletnumber, briefintro,pictureurl,classify,data from user left join essay on " +
+                            "essay.userid=user.userid left join picture on essay.essayid=picture.essayid left join " +
+                            "classfy_to_essay cte on essay.essayid = cte.essayid left join classify c on " +
+                            "cte.classfy_id = c.id where user.userid = ? and essay.isDelete = 0 ",
+                    new BeanPropertyRowMapper<>(Userpage.class),userid);
+            if (CollectionUtils.isEmpty(fan)){
+                User user = jdbc.queryForObject("select nickname,avatar,userid from user where userid = ?",
+                        new BeanPropertyRowMapper<>(User.class),userid);
+                result.setCode("200");
+                result.setResult(user);
+                return result;
+
+            }
+            result.setCode("200");
+            result.setResult(fan);
+            return result;
+        }catch (DataAccessException e){
+            e.printStackTrace();
+            result.setCode("201");
+            result.setResult("查找失败");
+            return result;
+        }
+    }
+
 
 
 

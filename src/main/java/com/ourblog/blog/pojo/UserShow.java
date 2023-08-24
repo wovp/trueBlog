@@ -6,4 +6,7 @@ import lombok.Data;
 public class UserShow {
     private String avatar;
     private String nickname;
+
+    private Integer userid;
+    private String age;
 }
