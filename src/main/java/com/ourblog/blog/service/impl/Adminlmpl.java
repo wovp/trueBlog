@@ -64,7 +64,7 @@ public class Adminlmpl implements AdminInterface {
     }
 
     //public Result addclass(String class)
-    /*
+
     public Result classcount(){
         Result result = new Result();
         try {
@@ -119,5 +119,5 @@ public class Adminlmpl implements AdminInterface {
             return result;
         }
 
-    }*/
+    }
 }

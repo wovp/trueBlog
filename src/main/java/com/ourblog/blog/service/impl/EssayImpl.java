@@ -68,9 +68,33 @@ public class EssayImpl implements EssayInterface {
 
     @Override
     public List<Map<String, Object>> getEssayDetail(String EssayID) {
-        String sql = "select essay.essayid, author, content, likenumber, colletnumber, pictureurl from essay left join picture on essay.essayid  = picture.essayid where essay.essayid = ?";
+        String sql = "select e.essayid, e.userid,  author, e.title, content, likenumber, colletnumber, pictureurl, c.classify from essay e, picture p , classfy_to_essay ce , classify c where e.essayid  = p.essayid and e.essayid = ce.essayid and e.essayid = ? and c.id = ce.classfy_id";
         List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql, EssayID);
         return EssayList;
+    }
+
+    public List<Map<String, Object>> getBlogDetailIsLikeAndCollect(String EssayID, String UserID) {
+        String sql = "select ue.YNlike, ue.YNcollect from user u, user_to_eassy_likes_collect_read ue where u.userid = ue.user_id and u.userid = ? and ue.eassy_id = ?";
+        List<Map<String, Object>> EssayList = jdbcTemplate.queryForList(sql, UserID, EssayID);
+        return EssayList;
+    }
+
+    public int getBlogDetailIsFollow(String UserID, String CUserID) {
+        String sql = "select YNcare from user_to_user where userid = ? and care_user_id = ?";
+        int qu = 0;
+        try {
+            String s = jdbcTemplate.queryForObject(sql, String.class, UserID, CUserID);
+            if ("0".equals(s)){
+                return 0;
+            }
+            else{
+                qu = 1;
+            }
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return qu;
     }
 
     @Override
@@ -176,6 +200,7 @@ public class EssayImpl implements EssayInterface {
     public int addEssayLikes(String EssayID, String UserID) {
         String sql_qu = "select YNlike from user_to_eassy_likes_collect_read where user_id = ? and eassy_id = ?";
         int update = 0;
+        String sql_upes = "update essay set likenumber = likenumber + 1 where essayid = ?";
         try {
             String s = jdbcTemplate.queryForObject(sql_qu, String.class, UserID, EssayID);
 
@@ -187,6 +212,7 @@ public class EssayImpl implements EssayInterface {
             if("0".equals(s)){
                 System.out.println("进入增加");
                 update = jdbcTemplate.update(sql_up, EssayID, UserID);
+                jdbcTemplate.update(sql_upes, EssayID);
             }
             else{
                 update = jdbcTemplate.update(sql_do, EssayID, UserID);
@@ -222,14 +248,17 @@ public class EssayImpl implements EssayInterface {
 
         String sql_upa1 = "update user_to_eassy_likes_collect_read set read_num = read_num + 1 where user_id = ? and eassy_id = ?";
 
+        String sql_upes = "update essay set viewnumber = essay.viewnumber + 1 where essayid = ?";
         int update = 0;
         try {
             jdbcTemplate.queryForObject(sql_re, String.class, UserID, EssayID);
             // 没有报错，说明查到了，用户之前阅读过，只需要阅读量加1 就好
             update = jdbcTemplate.update(sql_upa1, UserID, EssayID);
+            jdbcTemplate.update(sql_upes, EssayID);
         } catch (DataAccessException e) {
             // 如果报错，说明数据库该用户没有阅读过，需要插入数据
             update = jdbcTemplate.update(sqlre, UserID, EssayID);
+            jdbcTemplate.update(sql_upes, EssayID);
         }
         return update;
     }
@@ -241,6 +270,7 @@ public class EssayImpl implements EssayInterface {
 
     public int addEssayCollect(String EssayID, String UserID) {
         String sql_qu = "select YNcollect from user_to_eassy_likes_collect_read where user_id = ? and eassy_id = ?";
+        String sql_upes = "update essay set colletnumber = essay.colletnumber + 1 where essayid = ?";
         int update = 0;
         try {
             String s = jdbcTemplate.queryForObject(sql_qu, String.class, UserID, EssayID);
@@ -252,6 +282,7 @@ public class EssayImpl implements EssayInterface {
             System.out.println(s);
             if("0".equals(s)){
                 System.out.println("进入增加");
+                jdbcTemplate.update(sql_upes, EssayID);
                 update = jdbcTemplate.update(sql_up, EssayID, UserID);
             }
             else{
@@ -259,6 +290,7 @@ public class EssayImpl implements EssayInterface {
                 update = 0;
             }
         } catch (DataAccessException e) {
+            System.out.println("查不到收藏");
             return 0;
         }
         return update;

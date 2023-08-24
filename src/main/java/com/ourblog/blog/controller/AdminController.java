@@ -45,7 +45,6 @@ public class AdminController {
         result=adminlmpl.ynadmin(username,password);
         return result;
     }
-    /*
 
     @GetMapping("/api/blog/classcount")
     public Result classcount(){
@@ -64,7 +63,7 @@ public class AdminController {
         Result result = new Result();
         result=adminlmpl.countuser();
         return result;
-    }*/
+    }
 
 
 }
