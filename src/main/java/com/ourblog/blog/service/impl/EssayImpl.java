@@ -201,6 +201,7 @@ public class EssayImpl implements EssayInterface {
         String sql_qu = "select YNlike from user_to_eassy_likes_collect_read where user_id = ? and eassy_id = ?";
         int update = 0;
         String sql_upes = "update essay set likenumber = likenumber + 1 where essayid = ?";
+        String sql_updownes = "update essay set likenumber = likenumber - 1 where essayid = ?";
         try {
             String s = jdbcTemplate.queryForObject(sql_qu, String.class, UserID, EssayID);
 
@@ -216,6 +217,7 @@ public class EssayImpl implements EssayInterface {
             }
             else{
                 update = jdbcTemplate.update(sql_do, EssayID, UserID);
+                jdbcTemplate.update(sql_updownes, EssayID);
                 update = 0;
             }
         } catch (DataAccessException e) {
@@ -249,6 +251,7 @@ public class EssayImpl implements EssayInterface {
         String sql_upa1 = "update user_to_eassy_likes_collect_read set read_num = read_num + 1 where user_id = ? and eassy_id = ?";
 
         String sql_upes = "update essay set viewnumber = essay.viewnumber + 1 where essayid = ?";
+
         int update = 0;
         try {
             jdbcTemplate.queryForObject(sql_re, String.class, UserID, EssayID);
@@ -271,6 +274,7 @@ public class EssayImpl implements EssayInterface {
     public int addEssayCollect(String EssayID, String UserID) {
         String sql_qu = "select YNcollect from user_to_eassy_likes_collect_read where user_id = ? and eassy_id = ?";
         String sql_upes = "update essay set colletnumber = essay.colletnumber + 1 where essayid = ?";
+        String sql_updoes = "update essay set colletnumber = essay.colletnumber - 1 where essayid = ?";
         int update = 0;
         try {
             String s = jdbcTemplate.queryForObject(sql_qu, String.class, UserID, EssayID);
@@ -287,6 +291,7 @@ public class EssayImpl implements EssayInterface {
             }
             else{
                 update = jdbcTemplate.update(sql_do, EssayID, UserID);
+                jdbcTemplate.update(sql_updoes,EssayID);
                 update = 0;
             }
         } catch (DataAccessException e) {
