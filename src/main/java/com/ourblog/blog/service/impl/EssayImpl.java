@@ -193,6 +193,7 @@ public class EssayImpl implements EssayInterface {
                 update = 0;
             }
         } catch (DataAccessException e) {
+
             return 0;
         }
         return update;

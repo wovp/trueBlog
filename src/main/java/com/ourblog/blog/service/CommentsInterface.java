@@ -16,7 +16,7 @@ import java.util.Map;
 public interface CommentsInterface {
 
     // 发布评论, uid 是 发布评论的人的 id ， aid 是被评论博客的id
-    int addComment(String comment, int uid, int aid);
+    int addComment(String comment, String uid, String aid);
 
     // 评论id
     int deleteComment(int id);
@@ -25,7 +25,7 @@ public interface CommentsInterface {
     List<Map<String, Object>> showCommentsList(String aid);
 
     // 点赞评论
-    int likeComment(int aid);
+    int likeComment(String uid, String cid);
 
     // 取消点赞评论
     int cancelLikeComment(int aid);

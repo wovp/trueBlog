@@ -12,3 +12,17 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
+
+justauth:
+  # 是否启用
+  enabled: true
+  type:
+    # 配置各种类型的登陆
+    GITEE:
+      # 创建的应用的client-id
+      client-id: f21a584dfc96397e9ad2d1e1d0bac8d3f6caf1f49271359f234dcabdeb2abd28
+      client-secret: 802118ef35195c801b867e4cb90ed3f3394b7e7eb384a7dfc92a4aa93f2250a6
+      # 自己写的回调地址
+      redirect-uri: http://192.168.7.219:9090/Auth/gitee/callback
+  cache:
+    type: default
