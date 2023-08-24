@@ -49,6 +49,34 @@ public class UserController {
         result=userImpl.getUserInfo(username);
         return result;
     }
+
+    @GetMapping("/api/user/getUsetInfoByToken")
+    public Result getUserInfoByToken(String token){
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(userImpl.getUserInfoByToken(token));
+        return result;
+    }
+
+    @PostMapping("/api/user/login")
+    public Result getUserInfo(@RequestBody Map<String,String> map){
+        String username = map.get("username");
+        String password = map.get("password");
+
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(userImpl.login(username, password));
+        return result;
+    }
+
+    @GetMapping("/api/user/followUser")
+    public Result followUser(String uid, String cuid){
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(userImpl.followUser(uid, cuid));
+        return result;
+    }
+
     @GetMapping("/api/blog/getfans")
     public Result getfans(String username) {
         Result result = new Result();
@@ -139,5 +167,5 @@ public class UserController {
         System.out.println(username);
         result=userImpl.getcareInfo(username);
         return result;
-    }
+    }*/
 }
