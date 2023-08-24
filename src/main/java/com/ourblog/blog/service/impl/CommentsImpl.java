@@ -24,7 +24,7 @@ public class CommentsImpl implements CommentsInterface {
     JdbcTemplate jdbcTemplate;
     @Override
     public int addComment(String comment, String uid, String aid) {
-        System.out.println(aid);
+        System.out.println(comment);
         String sql = "insert into comments (eassy_id, date, context, YNdelete, userid, likes) value (?, NOW(), ?, 0, ?, 0)";
         int update = jdbcTemplate.update(sql, aid, comment, uid);
         return update;

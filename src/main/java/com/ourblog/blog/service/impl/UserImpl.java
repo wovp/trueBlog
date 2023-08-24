@@ -12,9 +12,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 @Repository
 public  class UserImpl implements UserInterface {
@@ -455,6 +455,15 @@ public  class UserImpl implements UserInterface {
         String sql = "select se.userid, nickname, se.count from (select userid, count(*) count from essay group by userid) se, user where user.userid = se.userid order by se.count DESC";
         List<Map<String, Object>> maps = jdbc.queryForList(sql);
         return maps;
+    }
+
+
+
+    @Override
+    public User getUserInfoByToken(String token) {
+        String sql = "select * from user where token = ?";
+        User user = jdbc.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), token);
+        return user;
     }
 
     /*@Override
