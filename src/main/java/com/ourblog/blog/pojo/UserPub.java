@@ -6,6 +6,7 @@ import lombok.Data;
 public class UserPub {
     private Integer essayid;
     private String title;
+    private String data;
     private String author;
     private Integer viewnumber;
     private Integer likenumber;
