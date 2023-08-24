@@ -8,6 +8,7 @@ import java.sql.Date;
 public class Userpage {
     private Integer essayid;
     private Integer userid;
+    private Date birthday;
     private String age;
     private String avatar;
     private String title;
@@ -19,4 +20,5 @@ public class Userpage {
     private String pictureurl;
     private String classify;
     private Date data;
+
 }
