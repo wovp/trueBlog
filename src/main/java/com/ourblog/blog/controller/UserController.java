@@ -12,14 +12,18 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sun.security.util.Password;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * ClassName: BlogController
@@ -69,13 +73,7 @@ public class UserController {
         return result;
     }
 
-    @ApiOperation(value = "查询用户粉丝数量",
-            protocols = "http",
-            httpMethod="GET",
-            consumes="application/json",
-            response=Result.class,
-            notes = "code:200 表示成功" +
-                    "code:201 取消失败")
+
     @GetMapping("/api/user/getUsetInfoByToken")
     public Result getUserInfoByToken(String token){
         Result result = new Result();
@@ -103,6 +101,41 @@ public class UserController {
         return result;
     }
 
+    @PostMapping(value = "/api/user/addUserPic")
+    public Result fileUpload(@RequestParam(value = "file") MultipartFile file) {
+        if (file.isEmpty()) {
+            System.out.println("文件为空空");
+        }
+
+        String fileName = file.getOriginalFilename();  // 文件名
+        System.out.println(fileName);
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));  // 后缀名
+        String filePath = "F:/Code/CodeSource/JavaCode/pictureRoot/"; // 上传后的路径
+        fileName = UUID.randomUUID() + suffixName; // 新文件名
+        File dest = new File(filePath + fileName);
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
+        }
+        try {
+            file.transferTo(dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String getFilePath = "/image/" + fileName;
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(getFilePath);
+        System.out.println(result.getResult());
+        return result;
+    }
+
+    @ApiOperation(value = "查询用户粉丝数量",
+            protocols = "http",
+            httpMethod="GET",
+            consumes="application/json",
+            response=Result.class,
+            notes = "code:200 表示成功" +
+                    "code:201 取消失败")
     @GetMapping("/api/blog/getfans")
     public Result getfans(String username) {
         Result result = new Result();
@@ -242,8 +275,6 @@ public class UserController {
     }
 
 
-    /*@PostMapping("/api/blog/unbook")
-    public Result (@RequestParam ){
     @GetMapping("/api/blog/getcares")
     public Result getcares(String username) {
         Result result = new Result();
@@ -299,5 +330,5 @@ public class UserController {
         return result;
     }
 
-    }*/
 }
+

@@ -89,6 +89,33 @@ public class EssayController {
         result.setCode("200");
         return result;
     }
+    @ApiOperation(value = "查询用户是否点赞收藏博客",
+            protocols = "http",
+            httpMethod = "GET",
+            consumes="application/form",
+            response=Result.class,
+            notes = "code:200 表示成功"
+    )
+    @GetMapping("/api/blog/getBlogDetailIsLikeAndCollect")
+    public Result getBlogDetailIsLikeAndCollect(String uid, String eid){
+        Result result = new Result();
+        result.setResult(essayImpl.getBlogDetailIsLikeAndCollect(eid, uid));
+        result.setCode("200");
+        return result;
+    }
+
+    @GetMapping("/api/blog/getBlogDetailIsFollow")
+    public Result getBlogDetailIsFollow(String uid, String euid){
+
+        Result result = new Result();
+        if (uid == null){
+            result.setCode("400");
+            return result;
+        }
+        result.setResult(essayImpl.getBlogDetailIsFollow(uid, euid));
+        result.setCode("200");
+        return result;
+    }
 
     @ApiOperation(value = "查询博客的阅读量",
             protocols = "http",
@@ -154,7 +181,7 @@ public class EssayController {
         String fileName = file.getOriginalFilename();  // 文件名
         System.out.println(fileName);
         String suffixName = fileName.substring(fileName.lastIndexOf("."));  // 后缀名
-        String filePath = "F:/Code/CodeSource/JavaCode/shixunBlog/src/main/resources/static/"; // 上传后的路径
+        String filePath = "F:/Code/CodeSource/JavaCode/pictureRoot//"; // 上传后的路径
         fileName = UUID.randomUUID() + suffixName; // 新文件名
         File dest = new File(filePath + fileName);
         if (!dest.getParentFile().exists()) {
@@ -262,7 +289,7 @@ public class EssayController {
     @GetMapping("/api/blog/addBlogCollect")
     public Result addEssayCollect(String uid, String eid){
         Result result = new Result();
-        result.setResult(essayImpl.addEssayCollect(uid, eid));
+        result.setResult(essayImpl.addEssayCollect(eid, uid));
         result.setCode("200");
         return result;
     }
