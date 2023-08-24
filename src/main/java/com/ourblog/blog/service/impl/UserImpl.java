@@ -223,7 +223,7 @@ public  class UserImpl implements UserInterface {
         Result result = new Result();
 
         try {
-                List<UserPub> essay= jdbc.query("select essay.essayid, title,author, viewnumber, likenumber, colletnumber, briefintro,pictureurl,classify from user left join\n" +
+                List<UserPub> essay= jdbc.query("select essay.essayid, title,data,author, viewnumber, likenumber, colletnumber, briefintro,pictureurl,classify from user left join\n" +
                                 "user_to_eassy_likes_collect_read co on user.userid = co.user_id left join essay on eassy_id= essayid\n" +
                                 "left join picture on essay.essayid=picture.essayid left join classfy_to_essay cte on essay.essayid = cte.essayid\n" +
                                 "left join classify c on cte.classfy_id = c.id where user.username = ? and essay.isDelete = 0 and YNcollect = 1 ",
@@ -402,7 +402,7 @@ public  class UserImpl implements UserInterface {
         Result result = new Result();
         try{
             System.out.println(username);
-            List<UserShow> user= jdbc.query("select avatar,nickname,userid,age from user where YNlogout = 0 and userid IN (select care_user_id  from user_to_user where user_to_user.userid in\n" +
+            List<UserShow> user= jdbc.query("select avatar,nickname,userid,age from user where YNlogout = 0 and userid and YNcare = 1 IN (select care_user_id  from user_to_user where user_to_user.userid in\n" +
                     " (select userid from user where username = ?))",new BeanPropertyRowMapper<>(UserShow.class),username);
             if (CollectionUtils.isEmpty(user)){
                 result.setResult("您还没有关注哦~去发现宝藏用户吧！");
@@ -446,16 +446,16 @@ public  class UserImpl implements UserInterface {
         Result result = new Result();
         System.out.println(userid);
         try {
-            List<Userpage> fan= jdbc.query("select essay.essayid,user.userid,age, avatar,title,nickname,viewnumber, likenumber, " +
+            List<Userpage> fan= jdbc.query("select essay.essayid,user.userid,birthday,age, avatar,title,nickname,viewnumber, likenumber, " +
                             "colletnumber, briefintro,pictureurl,classify,data from user left join essay on " +
                             "essay.userid=user.userid left join picture on essay.essayid=picture.essayid left join " +
                             "classfy_to_essay cte on essay.essayid = cte.essayid left join classify c on " +
                             "cte.classfy_id = c.id where user.userid = ? and essay.isDelete = 0 ",
                     new BeanPropertyRowMapper<>(Userpage.class),userid);
             if (CollectionUtils.isEmpty(fan)){
-                User user = jdbc.queryForObject("select nickname,avatar,userid from user where userid = ?",
-                        new BeanPropertyRowMapper<>(User.class),userid);
-                result.setCode("200");
+                List<Userpage> user = jdbc.query("select nickname,avatar,userid,birthday from user where userid = ?",
+                        new BeanPropertyRowMapper<>(Userpage.class),userid);
+                result.setCode("202");
                 result.setResult(user);
                 return result;
 

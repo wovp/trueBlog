@@ -1,5 +1,6 @@
 package com.ourblog.blog.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ourblog.blog.pojo.Essay;
 import com.ourblog.blog.pojo.Result;
 import com.ourblog.blog.pojo.User;
@@ -45,6 +46,37 @@ public class AdminController {
         result=adminlmpl.ynadmin(username,password);
         return result;
     }
+    @ApiOperation(value = "管理员增加分类",
+            protocols = "http",
+            httpMethod="POST",
+            consumes="application/json",
+            response=Result.class,
+            notes = "code:200 表示成功" +
+                    "code:201 表示失败")
+    @PostMapping("/api/blog/addclass")
+    public Result addclass(@RequestBody JSONObject object){
+        Result result = new Result();
+        result= adminlmpl.addclass(object.getString("classify"));
+        return result;
+    }
+
+    @GetMapping("/api/blog/hotessay")
+    public Result hotessay(){
+        Result result = new Result();
+        result=adminlmpl.hotessay();
+        return result;
+    }
+
+
+    @PostMapping("/api/blog/deleteclass")
+    public Result deleteclass(String classify){
+        Result result = new Result();
+        result=adminlmpl.deleteclass(classify);
+        return result;
+    }
+
+
+    /*
 
     @GetMapping("/api/blog/classcount")
     public Result classcount(){
@@ -57,7 +89,7 @@ public class AdminController {
         Result result = new Result();
         result=adminlmpl.countread();
         return result;
-    }
+    }*/
     @GetMapping("/api/blog/countuser")
     public Result countuser(){
         Result result = new Result();

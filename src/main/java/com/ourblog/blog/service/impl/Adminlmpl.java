@@ -2,14 +2,11 @@ package com.ourblog.blog.service.impl;
 
 import com.ourblog.blog.pojo.*;
 import com.ourblog.blog.service.AdminInterface;
-import net.sf.jsqlparser.statement.select.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.incrementer.SybaseAnywhereMaxValueIncrementer;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -63,6 +60,55 @@ public class Adminlmpl implements AdminInterface {
         }
     }
 
+    public Result addclass(String classify){
+        Result result = new Result();
+        try {
+            jdbc.update("insert into classify (classify) value (?)",classify);
+            result.setCode("200");
+            result.setResult("插入成功");
+            return result;
+        }catch (DataAccessException e){
+            e.printStackTrace();
+            result.setCode("201");
+            result.setResult("插入失败");
+            return result;
+        }
+
+
+
+    }
+
+    public Result hotessay(){
+        Result result = new Result();
+        try {
+            List<Hotessay> hotessay=jdbc.query("select essayid,title,count(YNcollect) as collectnum,count(likenumber) as likenum, sum(read_num)\n" +
+                    " as readnum from essay left join user_to_eassy_likes_collect_read co on essay.essayid = co.eassy_id\n" +
+                    "  group by essayid order by likenum desc limit 6",new BeanPropertyRowMapper<>(Hotessay.class));
+            result.setCode("200");
+            result.setResult(hotessay);
+            return result;
+        }catch (DataAccessException e){
+            result.setCode("201");
+            result.setResult("查找失败");
+            return result;
+        }
+    }
+
+    public Result deleteclass(String classify){
+        Result result = new Result();
+        try {
+            jdbc.update("update classfy_to_essay set classfy_id = 12 where classfy_id in\n" +
+                    " (select id from classify where classify = ?)",classify);
+            jdbc.update("delete from classify where classify = ?",classify);
+            result.setCode("200");
+            result.setResult("删除成功！");
+            return result;
+        }catch (DataAccessException e){
+            result.setCode("201");
+            result.setResult("删除失败！");
+            return result;
+        }
+    }
     //public Result addclass(String class)
 
     public Result classcount(){
@@ -85,7 +131,7 @@ public class Adminlmpl implements AdminInterface {
             result.setResult("查找错误");
             return result;
         }
-    }
+    }*/
     //获取总用户数
     public Result countuser(){
         Result result = new Result();
@@ -103,7 +149,7 @@ public class Adminlmpl implements AdminInterface {
 
     }
 
-    //获取总阅读量
+    /*//获取总阅读量
     public Result countread(){
         Result result = new Result();
         Integer rc = 0;
