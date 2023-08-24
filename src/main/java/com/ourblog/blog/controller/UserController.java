@@ -76,6 +76,33 @@ public class UserController {
             response=Result.class,
             notes = "code:200 表示成功" +
                     "code:201 取消失败")
+    @GetMapping("/api/user/getUsetInfoByToken")
+    public Result getUserInfoByToken(String token){
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(userImpl.getUserInfoByToken(token));
+        return result;
+    }
+
+    @PostMapping("/api/user/login")
+    public Result getUserInfo(@RequestBody Map<String,String> map){
+        String username = map.get("username");
+        String password = map.get("password");
+
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(userImpl.login(username, password));
+        return result;
+    }
+
+    @GetMapping("/api/user/followUser")
+    public Result followUser(String uid, String cuid){
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(userImpl.followUser(uid, cuid));
+        return result;
+    }
+
     @GetMapping("/api/blog/getfans")
     public Result getfans(String username) {
         Result result = new Result();
@@ -206,6 +233,17 @@ public class UserController {
             response=Result.class,
             notes = "code:200 表示成功，返回用户粉丝数" +
                     "code:201 表示查找失败")
+    @GetMapping("/api/user/getUserListByPublishBlog")
+    public Result getUserListByPublishBlog() {
+        Result result = new Result();
+        result.setCode("200");
+        result.setResult(userImpl.getUserListByPublishBlog());
+        return result;
+    }
+
+
+    /*@PostMapping("/api/blog/unbook")
+    public Result (@RequestParam ){
     @GetMapping("/api/blog/getcares")
     public Result getcares(String username) {
         Result result = new Result();
@@ -261,4 +299,5 @@ public class UserController {
         return result;
     }
 
+    }*/
 }

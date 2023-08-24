@@ -5,9 +5,7 @@ import com.ourblog.blog.service.impl.CommentsImpl;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,15 +30,29 @@ public class CommentsContro {
     @GetMapping("/api/blog/getCommentsList")
     public Result getEssayList(String aid){
         Result result = new Result();
-//        int sum_read = 0;
-//        String sql_re = "select read_num from user_to_eassy_likes_collect_read where eassy_id = ?";
-//        List<Map<String, Object>> maps1 = jdbcTemplate.queryForList(sql_re, aid);
-//        for (Map<String, Object> map1 : maps1) {
-//            int read_num = Integer.parseInt(map1.get("read_num").toString());
-//            sum_read += read_num;
-//        }
         List<Map<String, Object>> maps = comments.showCommentsList(aid);
         result.setResult(maps);
+        result.setCode("200");
+        return result;
+    }
+
+    @PostMapping("/api/blog/addComment")
+    public Result addComment(@RequestBody Map<String, String> map){
+        String aid = map.get("aid");
+        String uid = map.get("uid");
+        String context = map.get("context");
+        Result result = new Result();
+        int i = comments.addComment(context, uid, aid);
+        result.setResult(i);
+        result.setCode("200");
+        return result;
+    }
+
+    @GetMapping("/api/blog/likeComment")
+    public Result likeComment(String cid, String uid){
+        Result result = new Result();
+        int i = comments.likeComment(uid, cid);
+        result.setResult(i);
         result.setCode("200");
         return result;
     }

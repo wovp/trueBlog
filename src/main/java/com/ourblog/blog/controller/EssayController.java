@@ -33,7 +33,7 @@ public class EssayController {
             protocols = "http",
             httpMethod = "GET",
             consumes="application/json",
-            response=List.class,
+            response=Result.class,
             notes = "code:200 表示成功"
     )
     @GetMapping("/api/blog/getBlogList")
@@ -43,7 +43,13 @@ public class EssayController {
         result.setCode("200");
         return result;
     }
-
+    @ApiOperation(value = "通过分类查询博客列表",
+            protocols = "http",
+            httpMethod = "GET",
+            consumes="application/form",
+            response=Result.class,
+            notes = "code:200 表示成功"
+    )
     @GetMapping("/api/blog/getEssayListByCategory")
     public Result getEssayListByCategory(String classify){
         Result result = new Result();
@@ -53,7 +59,13 @@ public class EssayController {
     }
 
 
-
+    @ApiOperation(value = "根据关键词查询博客题目",
+            protocols = "http",
+            httpMethod = "GET",
+            consumes="application/form",
+            response=Result.class,
+            notes = "code:200 表示成功"
+    )
     @GetMapping("/api/blog/getBlogByKeyword")
     public Result getBlogByKeyword(String keyword){
         Result result = new Result();
@@ -63,7 +75,13 @@ public class EssayController {
         return result;
     }
 
-
+    @ApiOperation(value = "根据博客ID查询博客详情",
+            protocols = "http",
+            httpMethod = "GET",
+            consumes="application/form",
+            response=Result.class,
+            notes = "code:200 表示成功"
+    )
     @GetMapping("/api/blog/getBlogDetail")
     public Result getEssayDetail(String id){
         Result result = new Result();
@@ -72,6 +90,13 @@ public class EssayController {
         return result;
     }
 
+    @ApiOperation(value = "查询博客的阅读量",
+            protocols = "http",
+            httpMethod = "GET",
+            consumes="application/form",
+            response=Result.class,
+            notes = "code:200 表示成功"
+    )
     @GetMapping("/api/blog/getBlogDetailRead")
     public Result getEssayDetailRead(String id){
         Result result = new Result();
@@ -113,7 +138,13 @@ public class EssayController {
         return result;
     }
 
-    // 获得上传的文件，并且返回储存的地址
+    @ApiOperation(value = "上传博客的封面",
+            protocols = "http",
+            httpMethod = "Post",
+            consumes="application/json",
+            response=Result.class,
+            notes = "result:返回图片地址， code : 200 表示成功"
+    )
     @PostMapping(value = "/api/blog/addBlogPic")
     public Result fileUpload(@RequestParam(value = "file") MultipartFile file) {
         if (file.isEmpty()) {
@@ -142,6 +173,12 @@ public class EssayController {
         return result;
     }
 
+    @ApiOperation(value = "根据点赞量返回博客列表的前五个",
+            protocols = "http",
+            httpMethod = "GET",
+            response=Result.class,
+            notes = "code:200 表示成功"
+    )
     @GetMapping("/api/blog/getBlogListLikes")
     public Result getBlogListLikes(){
         Result result = new Result();
@@ -150,6 +187,14 @@ public class EssayController {
         return result;
     }
 
+
+    @ApiOperation(value = "返回所有博客的阅读量，阅读总量",
+            protocols = "http",
+            httpMethod = "GET",
+            consumes="application/json",
+            response=Result.class,
+            notes = "code:200 表示成功"
+    )
     @GetMapping("/api/blog/getAllEssayAllRead")
     public Result getAllEssayAllRead(){
         Result result = new Result();
@@ -159,6 +204,13 @@ public class EssayController {
     }
 
 
+    @ApiOperation(value = "删除自己发布的博客",
+            protocols = "http",
+            httpMethod = "GET",
+            consumes="application/json",
+            response=Result.class,
+            notes = "code:200  result: 1表示成功"
+    )
     @PostMapping("/api/blog/deleteBlog")
     public Result deleteEssay(@RequestBody Map<String,Object> map){
         String uid = map.get("uid").toString();
@@ -169,6 +221,12 @@ public class EssayController {
         return result;
     }
 
+    @ApiOperation(value = "根据 不同分类查询博客数量",
+            protocols = "http",
+            httpMethod = "GET",
+            response=Result.class,
+            notes = "code:200表示成功 result 返回一个数组"
+    )
     @GetMapping("/api/blog/getPublishCategoriesName")
     public Result getPublishCategoriesName(){
         Result result = new Result();
@@ -177,6 +235,13 @@ public class EssayController {
         return result;
     }
 
+    @ApiOperation(value = "查询所有博客列表",
+            protocols = "http",
+            httpMethod = "GET",
+            consumes="application/json",
+            response=List.class,
+            notes = "code:200 表示成功"
+    )
     @GetMapping("/api/blog/addBlogLikes")
     public Result addEssayLikes(String uid, String eid){
         Result result = new Result();
