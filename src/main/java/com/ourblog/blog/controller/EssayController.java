@@ -231,6 +231,7 @@ public class EssayController {
             response=Result.class,
             notes = "code:200 表示成功"
     )
+
     @PostMapping("/api/blog/addBlogByWord")
     public Result addEssayByWord(@RequestParam(value = "file", required = true) MultipartFile file){
         Result result = new Result();

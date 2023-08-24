@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+import sun.security.util.Password;
 
 import java.util.List;
 
@@ -148,6 +149,7 @@ public class UserController {
             notes = "code:200 表示成功" +
                     "code:202 表示成功并提醒没有发布过文章" +
                     "code:201 查找失败")
+    @GetMapping("/api/blog/getcollectblog")
     public Result getcollectblog(String username) {
         Result result = new Result();
         result=userImpl.getcollectblog(username);
@@ -243,4 +245,20 @@ public class UserController {
         result=userImpl.getcareInfo(username);
         return result;
     }
+
+
+    @GetMapping("/api/blog/login")
+    public User login(String username,String password) {
+        User result = new User();
+        result=userImpl.login(username, password);
+        return result;
+    }
+    @GetMapping("/api/blog/faninfopage")
+    public Result faninfopage(String userid) {
+        Result result = new Result();
+        System.out.println(userid);
+        result=userImpl.faninfopage(userid);
+        return result;
+    }
+
 }
